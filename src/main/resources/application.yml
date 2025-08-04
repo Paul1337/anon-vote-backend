@@ -1,0 +1,27 @@
+spring:
+  config:
+    import: ./secret.yml
+
+  logging:
+    level:
+      org.springframework.boot.context.config: DEBUG
+
+    hikari:
+      pool-name: poll-pool
+      maximum-pool-size: 10
+      connection-timeout: 5000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  liquibase:
+    enabled: false
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+
+server:
+  port: 8081
