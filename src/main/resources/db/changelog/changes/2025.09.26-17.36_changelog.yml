@@ -1,0 +1,6 @@
+databaseChangelog:
+  - changeSet:
+      id: add-name-index
+      author: paul
+      changes:
+        -

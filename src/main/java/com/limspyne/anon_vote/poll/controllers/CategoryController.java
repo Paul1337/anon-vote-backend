@@ -30,6 +30,12 @@ public class CategoryController {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    @GetMapping({ "/search" })
+    ResponseEntity<List<GetCategory.ResponseDto>> searchCategories(@RequestParam(name = "name", required = false, defaultValue = "") String name) {
+
+
+    }
+
     @GetMapping({"/{id}", "/", ""})
     ResponseEntity<List<GetCategory.ResponseDto>> getCategories(@PathVariable(name = "id", required = false) String categoryId, @RequestParam(name = "depth", defaultValue = "1") @Min(1) @Max(10) int depth) {
         List<PollCategory> items = null;
