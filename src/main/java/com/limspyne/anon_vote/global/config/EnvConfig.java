@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class EnvConfig {
     @PostConstruct
     public void loadDotEnv() {
-        Dotenv dotenv = Dotenv.configure().load();
+//        Dotenv dotenv = Dotenv.configure().load();
 
     }
 }

@@ -13,12 +13,6 @@ public class MapperConfig {
     @Bean
     public ModelMapper modelMapper() {
         var modelMapper = new ModelMapper();
-
-        modelMapper.typeMap(PollCategory.class, GetCategory.ResponseDto.class).addMappings(mapper -> {
-            mapper.map(src -> new ArrayList<>(),
-                    GetCategory.ResponseDto::setChildren);
-        });
-
         return modelMapper;
     }
 }

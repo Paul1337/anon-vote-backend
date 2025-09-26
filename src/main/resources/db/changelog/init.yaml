@@ -1,0 +1,222 @@
+databaseChangeLog:
+- changeSet:
+    id: 1755276807583-1
+    author: paul (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: quiz_pkey
+            name: id
+            type: UUID
+        - column:
+            name: created_at
+            type: TIMESTAMP WITH TIME ZONE
+        - column:
+            constraints:
+              nullable: false
+            name: title
+            type: VARCHAR(100)
+        - column:
+            name: updated_at
+            type: TIMESTAMP WITH TIME ZONE
+        tableName: poll
+- changeSet:
+    id: 1755276807583-2
+    author: paul (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: poll_answer_record_pkey
+            name: id
+            type: VARCHAR(255)
+        - column:
+            name: email
+            type: VARCHAR(255)
+        tableName: poll_answer_record
+- changeSet:
+    id: 1755276807583-3
+    author: paul (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: poll_category_pkey
+            name: id
+            type: UUID
+        - column:
+            name: parent_category_id
+            type: UUID
+        - column:
+            name: name
+            type: VARCHAR(128)
+        tableName: poll_category
+- changeSet:
+    id: 1755276807583-4
+    author: paul (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: question_pkey
+            name: id
+            type: UUID
+        - column:
+            constraints:
+              nullable: false
+            name: text
+            type: VARCHAR(255)
+        - column:
+            name: quiz_id
+            type: UUID
+        - column:
+            name: answers
+            type: VARCHAR[]
+        - column:
+            name: right_answer
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: poll_id
+            type: UUID
+        tableName: question
+- changeSet:
+    id: 1755276807583-5
+    author: paul (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: question_id
+            type: UUID
+        - column:
+            constraints:
+              nullable: false
+            name: option_text
+            type: VARCHAR(255)
+        tableName: question_options
+- changeSet:
+    id: 1755276807583-6
+    author: paul (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: quiz_answer_record_pkey
+            name: id
+            type: VARCHAR(255)
+        - column:
+            name: email
+            type: VARCHAR(255)
+        tableName: quiz_answer_record
+- changeSet:
+    id: 1755276807583-7
+    author: paul (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: quiz_category_pkey
+            name: id
+            type: UUID
+        tableName: quiz_category
+- changeSet:
+    id: 1755276807583-8
+    author: paul (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: users_pkey
+            name: id
+            type: VARCHAR(255)
+        - column:
+            name: email
+            type: VARCHAR(64)
+        tableName: users
+- changeSet:
+    id: 1755276807583-9
+    author: paul (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: parent_category_id
+        baseTableName: poll_category
+        constraintName: fk985n58q37dwejgx2o0ijhvpvc
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: poll_category
+        validate: true
+- changeSet:
+    id: 1755276807583-10
+    author: paul (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: quiz_id
+        baseTableName: question
+        constraintName: fkb0yh0c1qaxfwlcnwo9dms2txf
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: poll
+        validate: true
+- changeSet:
+    id: 1755276807583-11
+    author: paul (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: question_id
+        baseTableName: question_options
+        constraintName: fkjk4v42xhyfv4ca1yyhorsg5tv
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: question
+        validate: true
+- changeSet:
+    id: 1755276807583-12
+    author: paul (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: poll_id
+        baseTableName: question
+        constraintName: fks9uu0i9ipek2tnqty4ohdek27
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: poll
+        validate: true
+

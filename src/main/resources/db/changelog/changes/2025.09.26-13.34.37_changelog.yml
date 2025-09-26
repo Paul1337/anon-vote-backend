@@ -1,0 +1,25 @@
+databaseChangeLog:
+- changeSet:
+    comment: 'Dropped table (quiz -> poll renaming)'
+    id: 1758893682243-8
+    author: paul (generated)
+    changes:
+    - dropTable:
+        tableName: quiz_answer_record
+- changeSet:
+    comment: 'Dropped table (quiz -> poll renaming)'
+    id: 1758893682243-9
+    author: paul (generated)
+    changes:
+    - dropTable:
+        tableName: quiz_category
+- changeSet:
+    comment: 'Dropped column answers, because moved to question_options collection-table'
+    id: 1758893682243-10
+    author: paul (generated)
+    changes:
+    - dropColumn:
+        columnName: answers
+        tableName: question
+
+

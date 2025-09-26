@@ -1,4 +1,4 @@
-package com.limspyne.anon_vote.poll;
+package com.limspyne.anon_vote.poll.services;
 
 import org.springframework.stereotype.Service;
 
