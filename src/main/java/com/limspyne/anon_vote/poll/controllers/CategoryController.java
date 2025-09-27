@@ -9,6 +9,9 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +36,10 @@ public class CategoryController {
     @GetMapping({ "/search" })
     ResponseEntity<List<GetCategory.ResponseDto>> searchCategories(@RequestParam(name = "name", required = false, defaultValue = "") String name) {
 
+        Pageable pageable = PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "name"));
+        List<PollCategory> filteredCategories = categoryRepository.findByNameStartsWithIgnoreCase(name, pageable);
+        List<GetCategory.ResponseDto> filteredCategoriesResponse = filteredCategories.stream().map(item -> categoryMapper.toDto(item, 0)).toList();
+        return ResponseEntity.status(HttpStatus.OK).body(filteredCategoriesResponse);
 
     }
 

@@ -1,6 +1,7 @@
 package com.limspyne.anon_vote.poll.repositories;
 
 import com.limspyne.anon_vote.poll.entities.PollCategory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,4 +11,5 @@ import java.util.UUID;
 @Repository
 public interface CategoryRepository extends JpaRepository<PollCategory, UUID> {
     List<PollCategory> findByParentCategoryIdNull();
+    List<PollCategory> findByNameStartsWithIgnoreCase(String namePrefix, Pageable pageable);
 }

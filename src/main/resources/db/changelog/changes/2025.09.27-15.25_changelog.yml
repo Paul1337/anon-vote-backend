@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      description: added category relation to poll
+      id: poll-add-category-id
+      author: paul
+
+      changes:
+        - sql:
+            sql: ALTER TABLE poll ADD COLUMN category_id UUID;
+        - sql:
+            sql: ALTER TABLE poll ADD CONSTRAINT fk_poll_category FOREIGN KEY (category_id) REFERENCES poll_category(id);
+
+      rollback:
+        - sql:
+            sql: ALTER TABLE poll DROP CONSTRAINT fk_poll_category;
+        - sql:
+            sql: ALTER TABLE poll DROP COLUMN category_id;

@@ -1,6 +1,7 @@
-databaseChangelog:
+databaseChangeLog:
   - changeSet:
       id: add-name-index
       author: paul
       changes:
-        -
+        - sql:
+            sql: CREATE INDEX inx_poll_category_name ON poll_category (name);
