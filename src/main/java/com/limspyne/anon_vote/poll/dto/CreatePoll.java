@@ -29,14 +29,4 @@ public class CreatePoll {
             @NotBlank(message = "Нужно передать categoryId (id категории)")
             String categoryId
     ) {}
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Response {
-        private String id;
-        private String title;
-        private List<QuestionDto> questions;
-        private String categoryId;
-    }
 }

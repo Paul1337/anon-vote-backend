@@ -36,9 +36,6 @@ public class Question {
     @Getter
     private List<String> options;
 
-    @Column
-    private String rightAnswer;
-
     public Question(String text, List<String> options) {
         this.text = text;
         this.options = options;

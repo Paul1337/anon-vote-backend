@@ -34,13 +34,11 @@ public class CategoryController {
     private RedisTemplate<String, Object> redisTemplate;
 
     @GetMapping({ "/search" })
-    ResponseEntity<List<GetCategory.ResponseDto>> searchCategories(@RequestParam(name = "name", required = false, defaultValue = "") String name) {
-
+    ResponseEntity<List<GetCategory.ResponseWithPathDto>> searchCategories(@RequestParam(name = "name", required = false, defaultValue = "") String name) {
         Pageable pageable = PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "name"));
         List<PollCategory> filteredCategories = categoryRepository.findByNameStartsWithIgnoreCase(name, pageable);
-        List<GetCategory.ResponseDto> filteredCategoriesResponse = filteredCategories.stream().map(item -> categoryMapper.toDto(item, 0)).toList();
+        List<GetCategory.ResponseWithPathDto> filteredCategoriesResponse = filteredCategories.stream().map(item -> categoryMapper.toDtoWithPath(item)).toList();
         return ResponseEntity.status(HttpStatus.OK).body(filteredCategoriesResponse);
-
     }
 
     @GetMapping({"/{id}", "/", ""})

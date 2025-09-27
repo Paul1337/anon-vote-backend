@@ -6,15 +6,28 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class CategoryMapper {
     @Autowired
     private ModelMapper modelMapper;
+
+    public GetCategory.ResponseWithPathDto toDtoWithPath(PollCategory category) {
+        List<String> path = new ArrayList<>();
+        PollCategory currentCategory = category;
+        while (path.size() < 3 && currentCategory.getParentCategory() != null) {
+            path.add(currentCategory.getParentCategory().getName());
+            currentCategory = currentCategory.getParentCategory();
+        }
+
+        if (path.size() < 3) {
+            path.add("");
+        }
+
+        return new GetCategory.ResponseWithPathDto(category.getId().toString(), category.getName(), path.reversed());
+    }
 
     public GetCategory.ResponseDto toDto(PollCategory category, int maxDepth) {
         return toDto(category, maxDepth, 0);

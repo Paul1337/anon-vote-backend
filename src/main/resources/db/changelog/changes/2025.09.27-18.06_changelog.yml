@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-gin-index-for-substring-search
+      author: paul
+      changes:
+        - sql:
+            sql: CREATE EXTENSION IF NOT EXISTS pg_trgm;
+        - sql:
+            sql: CREATE INDEX idx_poll_title_gin ON poll USING GIN (title gin_trgm_ops);

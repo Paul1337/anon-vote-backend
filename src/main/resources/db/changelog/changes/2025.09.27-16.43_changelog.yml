@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      description: remove quiz_id from question
+      id: question-remove-quiz-id
+      author: paul
+
+      changes:
+        - sql:
+            sql: ALTER TABLE question DROP CONSTRAINT IF EXISTS fkb0yh0c1qaxfwlcnwo9dms2txf;
+        - sql:
+            sql: ALTER TABLE question DROP COLUMN quiz_id;
+
+      rollback: {}
+
+  - changeSet:
+      description: remove right_answer from question
+      id: question-remove-right_answer
+      author: paul
+
+      changes:
+        - sql:
+            sql: ALTER TABLE question DROP COLUMN right_answer;
+
+      rollback: {}
+

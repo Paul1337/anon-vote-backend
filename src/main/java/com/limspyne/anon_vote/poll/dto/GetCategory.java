@@ -1,5 +1,6 @@
 package com.limspyne.anon_vote.poll.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,5 +20,14 @@ public class GetCategory {
             this.name = name;
             this.children = children;
         }
+    }
+
+    @NoArgsConstructor
+    @Data
+    @AllArgsConstructor
+    public static class ResponseWithPathDto {
+        public String id;
+        public String name;
+        public List<String> path;
     }
 }
