@@ -66,14 +66,13 @@ services:
       REDIS_PORT: ${REDIS_PORT}
       WATCH_EXEC_DOWNLOAD: ${WATCH_EXEC_DOWNLOAD}
       SPRING_PROFILES_ACTIVE: dev
+      JAVA_OPTS: ${JAVA_OPTS}
     volumes:
       - ../../src:/app/src:rw
       - ../../pom.xml:/app/pom.xml:rw
-#      - ../../target:/app/target:rw
-#      - maven-repo:/root/.m2
     ports:
       - "${APP_PORT}:${APP_PORT}"
-#      - "5005:5005"
+      - "5005:5005"
     networks:
       - server-net
 

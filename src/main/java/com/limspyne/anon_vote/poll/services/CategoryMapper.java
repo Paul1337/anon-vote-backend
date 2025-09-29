@@ -14,15 +14,15 @@ public class CategoryMapper {
     @Autowired
     private ModelMapper modelMapper;
 
-    public GetCategory.ResponseWithPathDto toDtoWithPath(PollCategory category) {
+    public GetCategory.ResponseWithPathDto toDtoWithPath(PollCategory category, int pathDepth) {
         List<String> path = new ArrayList<>();
         PollCategory currentCategory = category;
-        while (path.size() < 3 && currentCategory.getParentCategory() != null) {
+        while (path.size() < pathDepth && currentCategory.getParentCategory() != null) {
             path.add(currentCategory.getParentCategory().getName());
             currentCategory = currentCategory.getParentCategory();
         }
 
-        if (path.size() < 3) {
+        if (path.size() < pathDepth) {
             path.add("");
         }
 

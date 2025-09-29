@@ -1,12 +1,17 @@
 package com.limspyne.anon_vote.global.config;
 
 import com.limspyne.anon_vote.poll.dto.GetCategory;
+import com.limspyne.anon_vote.poll.dto.GetPoll;
+import com.limspyne.anon_vote.poll.entities.Poll;
 import com.limspyne.anon_vote.poll.entities.PollCategory;
+import com.limspyne.anon_vote.poll.entities.PollTag;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 @Configuration
 public class MapperConfig {

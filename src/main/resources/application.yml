@@ -23,9 +23,6 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/changelog-master.yml
-#    url: ${spring.datasource.url}
-#    user: ${spring.datasource.username}
-#    password: ${spring.datasource.password}
 
   devtools:
     restart:
@@ -38,3 +35,7 @@ springdoc:
     path: '/api-doc'
   swagger-ui:
     path: '/swagger-ui'
+
+logging:
+  level:
+    org.modelmapper: DEBUG

@@ -7,7 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CreatePoll {
     @Data
@@ -27,6 +29,8 @@ public class CreatePoll {
             List<QuestionDto> questions,
 
             @NotBlank(message = "Нужно передать categoryId (id категории)")
-            String categoryId
+            String categoryId,
+
+            Set<String> tags
     ) {}
 }

@@ -12,9 +12,9 @@ public class SearchPolls {
         private String title = "";
 
         @Min(value = 0, message = "Page должен быть >= 0")
-        private int page;
+        private int page = 0;
 
         @Min(value = 1, message = "Size должен быть >= 1")
-        private int size;
+        private int size = 10;
     }
 }

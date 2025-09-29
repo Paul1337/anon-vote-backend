@@ -7,7 +7,6 @@ import com.limspyne.anon_vote.poll.repositories.CategoryRepository;
 import com.limspyne.anon_vote.poll.services.CategoryMapper;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,8 +34,8 @@ public class CategoryController {
     @GetMapping({ "/search" })
     ResponseEntity<List<GetCategory.ResponseWithPathDto>> searchCategories(@RequestParam(name = "name", required = false, defaultValue = "") String name) {
         Pageable pageable = PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "name"));
-        List<PollCategory> filteredCategories = categoryRepository.findByNameStartsWithIgnoreCase(name, pageable);
-        List<GetCategory.ResponseWithPathDto> filteredCategoriesResponse = filteredCategories.stream().map(item -> categoryMapper.toDtoWithPath(item)).toList();
+        List<PollCategory> filteredCategories = categoryRepository.findByNameStartsWithIgnoreCaseWithDepth3(name, pageable);
+        List<GetCategory.ResponseWithPathDto> filteredCategoriesResponse = filteredCategories.stream().map(item -> categoryMapper.toDtoWithPath(item, 3)).toList();
         return ResponseEntity.status(HttpStatus.OK).body(filteredCategoriesResponse);
     }
 

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 public class GetPoll {
     @Data
@@ -15,5 +16,6 @@ public class GetPoll {
         private String title;
         private List<CreatePoll.QuestionDto> questions;
         private String categoryId;
+        private Set<String> tags;
     }
 }
