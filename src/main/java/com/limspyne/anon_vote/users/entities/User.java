@@ -1,8 +1,10 @@
-package com.limspyne.anon_vote.poll.entities;
+package com.limspyne.anon_vote.users.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -11,7 +13,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Getter
-    private String id;
+    private UUID id;
 
     @Column(length = 64)
     @Getter

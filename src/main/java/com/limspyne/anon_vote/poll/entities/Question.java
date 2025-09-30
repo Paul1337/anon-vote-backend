@@ -16,6 +16,7 @@ import java.util.UUID;
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Getter
     private UUID id;
 
     @Column(nullable = false)
@@ -42,4 +43,5 @@ public class Question {
         this.text = text;
         this.options = options;
     }
+
 }

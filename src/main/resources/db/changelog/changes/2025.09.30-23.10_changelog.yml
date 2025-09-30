@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: poll_question_answer-create-table
+      author: paul
+      changes:
+        - sql: |
+            ALTER TABLE poll_answer_record ALTER COLUMN id type UUID USING id::UUID;
+        - sql: |
+            CREATE TABLE poll_question_answer (
+              id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+              question_id UUID NOT NULL,
+              poll_answer_record_id UUID NOT NULL,
+              answer VARCHAR(1024),
+              
+              CONSTRAINT poll_question_answer_question_fk
+              FOREIGN KEY (question_id) REFERENCES question(id),
+              
+              CONSTRAINT poll_question_answer_record_fk
+              FOREIGN KEY (poll_answer_record_id) REFERENCES poll_answer_record(id)
+            );

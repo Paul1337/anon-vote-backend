@@ -5,6 +5,7 @@ import com.limspyne.anon_vote.poll.dto.GetPoll;
 import com.limspyne.anon_vote.poll.entities.Poll;
 import com.limspyne.anon_vote.poll.entities.PollCategory;
 import com.limspyne.anon_vote.poll.entities.PollTag;
+import com.limspyne.anon_vote.poll.entities.Question;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

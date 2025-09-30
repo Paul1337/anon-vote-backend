@@ -1,6 +1,7 @@
 package com.limspyne.anon_vote.poll.controllers;
 
 import com.limspyne.anon_vote.poll.dto.SearchPolls;
+import com.limspyne.anon_vote.poll.dto.SubmitPoll;
 import com.limspyne.anon_vote.poll.entities.PollTag;
 import com.limspyne.anon_vote.poll.entities.Question;
 import com.limspyne.anon_vote.poll.exceptions.CategoryNotFoundException;
@@ -10,8 +11,10 @@ import com.limspyne.anon_vote.poll.dto.CreatePoll;
 import com.limspyne.anon_vote.poll.dto.GetPoll;
 import com.limspyne.anon_vote.poll.entities.Poll;
 import com.limspyne.anon_vote.poll.exceptions.PollNotFoundException;
+import com.limspyne.anon_vote.poll.services.PollSubmitService;
 import com.limspyne.anon_vote.poll.services.PollTagService;
 import com.limspyne.anon_vote.shared.dto.PageResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -39,13 +42,13 @@ public class PollController {
     @Autowired
     private ModelMapper modelMapper;
 
-//    @Autowired
-//    private PollTagRepository pollTagRepository;
-
     @Autowired
     private PollTagService pollTagService;
 
-    @PostMapping()
+    @Autowired
+    private PollSubmitService pollSubmitService;
+
+    @PostMapping({""})
     public ResponseEntity<GetPoll.Response> createPoll(@RequestBody @Valid CreatePoll.Request dto) {
         UUID categoryId = UUID.fromString(dto.categoryId());
         var pollCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(categoryId));
@@ -84,8 +87,14 @@ public class PollController {
     }
 
     @PostMapping("/{id}/submit")
-    public void submitPoll() {
+    @Operation(
+            summary = "Submit poll answers",
+            description = "Creates a new poll answer record with the provided answers"
+    )
+    public ResponseEntity<Void> submitPoll(@RequestBody SubmitPoll.Request request, @PathVariable(name = "id") UUID pollId) {
+        pollSubmitService.submitPoll(pollId, request.getAnswers());
 
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/{id}")

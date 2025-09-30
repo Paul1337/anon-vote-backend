@@ -11,10 +11,19 @@ public class GetPoll {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class QuestionDto {
+        private String id;
+        private String text;
+        private List<String> options;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Response {
         private String id;
         private String title;
-        private List<CreatePoll.QuestionDto> questions;
+        private List<QuestionDto> questions;
         private String categoryId;
         private Set<String> tags;
     }

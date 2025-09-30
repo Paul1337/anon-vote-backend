@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: poll_answer_record-drop-email
+      author: paul
+      changes:
+        - sql:
+            sql: ALTER TABLE poll_answer_record DROP COLUMN email;
+  - changeSet:
+      id: poll_answer_record-add-fingerprint
+      author: paul
+      changes:
+        - sql:
+            sql: ALTER TABLE poll_answer_record ADD COLUMN fingerprint TEXT;
+  - changeSet:
+      id: poll_answer_record-add-poll-id-fkey
+      author: paul
+      changes:
+        - sql:
+            sql: ALTER TABLE poll_answer_record ADD COLUMN poll_id UUID;
+        - sql:
+            sql: ALTER TABLE poll_answer_record ADD CONSTRAINT poll_answer_record_poll_relation_fk FOREIGN KEY (poll_id) REFERENCES poll(id);

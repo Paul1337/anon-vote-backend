@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: poll_answer_record-add-user-id
+      author: paul
+      changes:
+        - sql:
+            sql: ALTER TABLE users ALTER COLUMN id TYPE UUID USING id::UUID;
+        - sql:
+            sql: ALTER TABLE poll_answer_record ADD COLUMN user_id UUID;
+        - sql:
+            sql: ALTER TABLE poll_answer_record ADD CONSTRAINT poll_answer_record_user_relation_fk FOREIGN KEY (user_id) REFERENCES users(id);
