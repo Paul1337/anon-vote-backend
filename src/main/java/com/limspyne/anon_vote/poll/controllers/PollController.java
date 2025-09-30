@@ -10,23 +10,22 @@ import com.limspyne.anon_vote.poll.dto.CreatePoll;
 import com.limspyne.anon_vote.poll.dto.GetPoll;
 import com.limspyne.anon_vote.poll.entities.Poll;
 import com.limspyne.anon_vote.poll.exceptions.PollNotFoundException;
-import com.limspyne.anon_vote.poll.repositories.PollTagRepository;
 import com.limspyne.anon_vote.poll.services.PollTagService;
+import com.limspyne.anon_vote.shared.dto.PageResponseDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/polls")
@@ -72,10 +71,16 @@ public class PollController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<GetPoll.Response>> searchPolls(@Parameter(description = "Search parameters for polls") @ModelAttribute @Validated SearchPolls.Request request) {
-        List<Poll> polls = pollRepository.findByTitleContaining(request.getTitle(), PageRequest.of(request.getPage(), request.getSize()));
-        List<GetPoll.Response> pollsDtos = polls.stream().map(poll -> modelMapper.map(poll, GetPoll.Response.class)).toList();
-        return ResponseEntity.status(HttpStatus.OK).body(pollsDtos);
+    public ResponseEntity<PageResponseDto<GetPoll.Response>> searchPolls(@Parameter(description = "Search parameters for polls") @ModelAttribute @Validated SearchPolls.Request request) {
+        Page<Poll> pollsPage;
+        PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
+        if (request.getTags().isEmpty()) {
+            pollsPage = pollRepository.findAllByTitle(request.getTitle(), pageRequest);
+        } else {
+            pollsPage = pollRepository.findAllByTitleAndTags(request.getTitle(), request.getTags(), pageRequest);
+        }
+        List<GetPoll.Response> pollsDtos = pollsPage.stream().map(poll -> modelMapper.map(poll, GetPoll.Response.class)).toList();
+        return ResponseEntity.status(HttpStatus.OK).body(new PageResponseDto<>(pollsDtos, pollsPage.hasNext()));
     }
 
     @PostMapping("/{id}/submit")

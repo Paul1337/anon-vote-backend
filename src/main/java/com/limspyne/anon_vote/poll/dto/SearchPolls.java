@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class SearchPolls {
     @Data
     @NoArgsConstructor
@@ -16,5 +19,7 @@ public class SearchPolls {
 
         @Min(value = 1, message = "Size должен быть >= 1")
         private int size = 10;
+
+        private Set<String> tags = new HashSet<>();
     }
 }

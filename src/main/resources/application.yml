@@ -38,4 +38,5 @@ springdoc:
 
 logging:
   level:
-    org.modelmapper: DEBUG
+#    org.modelmapper: DEBUG
+    org.hibernate.SQL: DEBUG

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +34,7 @@ public class Question {
             joinColumns = @JoinColumn(name = "question_id")
     )
     @Column(name = "option_text", nullable = false)
+    @BatchSize(size = 10)
     @Getter
     private List<String> options;
 
