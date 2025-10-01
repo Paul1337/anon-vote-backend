@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -73,14 +74,15 @@ public class PollController {
                 .body(modelMapper.map(poll, GetPoll.Response.class));
     }
 
+    //, @RequestParam(value = "tags", defaultValue = "") Set<String> tags
     @GetMapping("/search")
     public ResponseEntity<PageResponseDto<GetPoll.Response>> searchPolls(@Parameter(description = "Search parameters for polls") @ModelAttribute @Validated SearchPolls.Request request) {
         Page<Poll> pollsPage;
         PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize());
         if (request.getTags().isEmpty()) {
-            pollsPage = pollRepository.findAllByTitle(request.getTitle(), pageRequest);
+            pollsPage = pollRepository.findAllByTitle(request.getTitle(), request.getCategoryId(), pageRequest);
         } else {
-            pollsPage = pollRepository.findAllByTitleAndTags(request.getTitle(), request.getTags(), pageRequest);
+            pollsPage = pollRepository.findAllByTitleAndTags(request.getTitle(), request.getCategoryId(), request.getTags(), pageRequest);
         }
         List<GetPoll.Response> pollsDtos = pollsPage.stream().map(poll -> modelMapper.map(poll, GetPoll.Response.class)).toList();
         return ResponseEntity.status(HttpStatus.OK).body(new PageResponseDto<>(pollsDtos, pollsPage.hasNext()));
@@ -93,7 +95,6 @@ public class PollController {
     )
     public ResponseEntity<Void> submitPoll(@RequestBody SubmitPoll.Request request, @PathVariable(name = "id") UUID pollId) {
         pollSubmitService.submitPoll(pollId, request.getAnswers());
-
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

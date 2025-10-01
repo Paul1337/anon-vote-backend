@@ -35,7 +35,7 @@ public class Question {
             joinColumns = @JoinColumn(name = "question_id")
     )
     @Column(name = "option_text", nullable = false)
-    @BatchSize(size = 10)
+    @BatchSize(size = 20)
     @Getter
     private List<String> options;
 

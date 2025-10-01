@@ -4,9 +4,11 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 public class SearchPolls {
     @Data
@@ -21,5 +23,7 @@ public class SearchPolls {
         private int size = 10;
 
         private Set<String> tags = new HashSet<>();
+
+        private UUID categoryId;
     }
 }

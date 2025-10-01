@@ -14,13 +14,12 @@ import java.util.UUID;
 @Repository
 public interface PollRepository extends JpaRepository<Poll, UUID> {
     @Query("SELECT p FROM Poll p WHERE p.id = :id")
-    @EntityGraph(attributePaths = {"questions", "tags", "category"})
-//    @EntityGraph(attributePaths = { "tags", "questions", "questions.options",  "category" })
+    @EntityGraph(attributePaths = {"tags", "category"})
     Optional<Poll> findById(@Param("id") UUID id);
 
-    @Query("SELECT DISTINCT p FROM Poll p JOIN FETCH p.tags JOIN FETCH p.questions JOIN FETCH p.category WHERE p.title ILIKE %:title%")
-    Page<Poll> findAllByTitle(@Param("title") String title, Pageable pageable);
+    @Query("SELECT DISTINCT p FROM Poll p JOIN FETCH p.tags JOIN FETCH p.category WHERE p.title ILIKE %:title% AND (:categoryId IS NULL or p.category.id = :categoryId)")
+    Page<Poll> findAllByTitle(@Param("title") String title, @Param("categoryId") UUID categoryId, Pageable pageable);
 
-    @Query("SELECT DISTINCT p FROM Poll p JOIN FETCH p.tags t WHERE t.name IN (:tags) AND title ILIKE %:title%")
-    Page<Poll> findAllByTitleAndTags(@Param("title") String title, @Param("tags") Set<String> tags, Pageable pageable);
+    @Query("SELECT DISTINCT p FROM Poll p JOIN FETCH p.tags t JOIN FETCH p.category WHERE EXISTS (SELECT 1 FROM p.tags t WHERE t.name IN (:tags)) AND title ILIKE %:title% AND (:categoryId IS NULL or p.category.id = :categoryId)")
+    Page<Poll> findAllByTitleAndTags(@Param("title") String title, @Param("categoryId") UUID categoryId, @Param("tags") Set<String> tags, Pageable pageable);
 }
