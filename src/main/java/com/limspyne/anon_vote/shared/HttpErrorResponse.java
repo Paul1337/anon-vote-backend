@@ -4,6 +4,6 @@ import java.util.List;
 
 public record HttpErrorResponse(String message, List<String> details) {
     public HttpErrorResponse(String message) {
-        this(message, null);
+        this(message, List.of());
     }
 }

@@ -67,6 +67,10 @@ services:
       WATCH_EXEC_DOWNLOAD: ${WATCH_EXEC_DOWNLOAD}
       SPRING_PROFILES_ACTIVE: dev
       JAVA_OPTS: ${JAVA_OPTS}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
     volumes:
       - ../../src:/app/src:rw
       - ../../pom.xml:/app/pom.xml:rw

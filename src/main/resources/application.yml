@@ -40,3 +40,11 @@ logging:
   level:
 #    org.modelmapper: DEBUG
     org.hibernate.SQL: DEBUG
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION}
+
+mail:
+  username: ${MAIL_USERNAME}
+  password: ${MAIL_PASSWORD}

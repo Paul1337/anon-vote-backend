@@ -3,23 +3,45 @@ package com.limspyne.anon_vote.users.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
+@Getter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Getter
     private UUID id;
 
-    @Column(length = 64)
-    @Getter
+    @Column(length = 64, unique = true)
     private String email;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Setter
+    private List<UserActiveCode> activeCodes = new ArrayList<>();
 
     public User(String email) {
         this.email = email;
+    }
+
+    public void addActiveCode(UserActiveCode code) {
+        activeCodes.add(code);
+        code.setUser(this);
+    }
+
+    public boolean tryConfirmCodeValue(String codeValue) {
+        List<UserActiveCode> activeCodes = getActiveCodes();
+        return activeCodes.stream().anyMatch(activeCode -> {
+            boolean codeValueIsRight = activeCode.getValue().equals(codeValue);
+            boolean codeIsNotExpired = Duration.between(activeCode.getCreatedAt(), LocalDateTime.now()).compareTo(UserActiveCode.CODE_DURATION) < 0;
+            return codeValueIsRight && codeIsNotExpired;
+        });
     }
 }

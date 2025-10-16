@@ -26,5 +26,6 @@ public class GetPoll {
         private List<QuestionDto> questions;
         private String categoryId;
         private Set<String> tags;
+        private boolean isAnswered;
     }
 }

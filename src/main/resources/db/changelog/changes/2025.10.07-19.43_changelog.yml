@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-table-user_active_code
+      author: paul
+      changes:
+        - sql: |
+            CREATE TABLE user_active_code (
+              id UUID PRIMARY KEY,
+              user_id UUID NOT NULL,
+              value VARCHAR(8) NOT NULL,
+              created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              CONSTRAINT fk_user_active_code_user_id FOREIGN KEY (user_id) REFERENCES users(id)            
+            );

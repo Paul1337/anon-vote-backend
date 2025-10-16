@@ -1,15 +1,16 @@
-package com.limspyne.anon_vote.poll.services;
+package com.limspyne.anon_vote.poll.mappers;
 
 import com.limspyne.anon_vote.poll.dto.GetCategory;
 import com.limspyne.anon_vote.poll.entities.PollCategory;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 public class CategoryMapper {
     @Autowired
     private ModelMapper modelMapper;

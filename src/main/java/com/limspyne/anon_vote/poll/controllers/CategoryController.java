@@ -4,14 +4,13 @@ import com.limspyne.anon_vote.poll.dto.GetCategory;
 import com.limspyne.anon_vote.poll.entities.PollCategory;
 import com.limspyne.anon_vote.poll.exceptions.CategoryNotFoundException;
 import com.limspyne.anon_vote.poll.repositories.CategoryRepository;
-import com.limspyne.anon_vote.poll.services.CategoryMapper;
+import com.limspyne.anon_vote.poll.mappers.CategoryMapper;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +26,6 @@ public class CategoryController {
 
     @Autowired
     private CategoryMapper categoryMapper;
-
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
 
     @GetMapping({ "/search" })
     ResponseEntity<List<GetCategory.ResponseWithPathDto>> searchCategories(@RequestParam(name = "name", required = false, defaultValue = "") String name) {

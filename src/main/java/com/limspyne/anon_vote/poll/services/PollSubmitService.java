@@ -10,6 +10,7 @@ import com.limspyne.anon_vote.poll.repositories.PollRepository;
 import com.limspyne.anon_vote.poll.repositories.QuestionRepository;
 import com.limspyne.anon_vote.users.entities.User;
 import com.limspyne.anon_vote.users.repositories.UserRepository;
+import com.limspyne.anon_vote.users.security.SecurityContextService;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,10 +34,14 @@ public class PollSubmitService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private SecurityContextService securityContextService;
+
     @Transactional
     public void submitPoll(UUID pollId, Map<UUID, String> answersMap) {
-        Poll poll = pollRepository.getReferenceById(pollId);
-        User user = userRepository.getReferenceById(UUID.randomUUID());
+        if (!pollRepository.existsById(pollId)) throw new PollNotFoundException(pollId);
+        User user = securityContextService.getCurrentUser();
+        Poll poll = pollRepository.findById(pollId).orElseThrow(() -> new PollNotFoundException(pollId));
 
         List<PollQuestionAnswer> answersEntities = answersMap.entrySet().stream().map(
                 (entry) -> new PollQuestionAnswer(questionRepository.getReferenceById(entry.getKey()), entry.getValue())

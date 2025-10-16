@@ -5,7 +5,7 @@ import com.limspyne.anon_vote.shared.AppBasicException;
 import java.util.UUID;
 
 public class PollNotFoundException extends AppBasicException {
-    public PollNotFoundException(UUID quizId) {
-        super("Poll with id %s not found!".formatted(quizId.toString()));
+    public PollNotFoundException(UUID pollId) {
+        super("Poll with id %s not found!".formatted(pollId.toString()));
     }
 }

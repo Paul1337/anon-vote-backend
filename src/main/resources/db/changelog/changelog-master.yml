@@ -23,3 +23,5 @@ databaseChangeLog:
       file: db/changelog/changes/2025.09.30-23.10_changelog.yml
   - include:
       file: db/changelog/changes/2025.09.30-23.26_changelog.yml
+  - include:
+      file: db/changelog/changes/2025.10.07-19.43_changelog.yml

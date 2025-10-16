@@ -29,6 +29,7 @@ public class PollQuestionAnswer {
     private String answer;
 
     public PollQuestionAnswer(Question question, String answer) {
+        this.question = question;
         this.answer = answer;
     }
 }
