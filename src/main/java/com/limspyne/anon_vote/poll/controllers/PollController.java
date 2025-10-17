@@ -15,6 +15,7 @@ import com.limspyne.anon_vote.poll.services.PollService;
 import com.limspyne.anon_vote.poll.services.PollSubmitService;
 import com.limspyne.anon_vote.poll.services.PollTagService;
 import com.limspyne.anon_vote.shared.dto.PageResponseDto;
+import com.limspyne.anon_vote.users.domain.services.UserService;
 import com.limspyne.anon_vote.users.instrustructure.security.AppUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -54,13 +55,18 @@ public class PollController {
     @Autowired
     private PollSubmitService pollSubmitService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping({""})
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<GetPoll.Response> createPoll(@RequestBody @Valid CreatePoll.Request dto, @AuthenticationPrincipal AppUserDetails userDetails) {
         UUID categoryId = UUID.fromString(dto.categoryId());
         var pollCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
-        Poll poll = new Poll(dto.title(), pollCategory);
+        var author = userService.getUserById(userDetails.getId());
+
+        Poll poll = new Poll(dto.title(), pollCategory, author);
 
         Set<PollTag> tags = pollTagService.findOrCreateTagsOfNames(dto.tags());
         poll.setTags(tags);
@@ -92,11 +98,20 @@ public class PollController {
         List<GetPoll.Response> pollsDtos;
 
         if (userDetails != null) {
-            pollsDtos = pollService.toListOfResponsesForAuthenticatedUser(pollsPage.getContent(), userDetails);
+            pollsDtos = pollService.getListOfResponsesForAuthenticatedUser(pollsPage.getContent(), userDetails);
         } else {
             pollsDtos = pollsPage.stream().map(poll -> pollMapper.toResponseForAnonymousUser(poll)).toList();
         }
         return ResponseEntity.status(HttpStatus.OK).body(new PageResponseDto<>(pollsDtos, pollsPage.hasNext()));
+    }
+
+    @GetMapping("/my")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<PageResponseDto<GetPoll.Response>> searchPolls(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @AuthenticationPrincipal AppUserDetails userDetails) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        var pollsPage = pollRepository.findAllByAuthorId(userDetails.getId(), pageRequest);
+        var pollsDtos = pollService.getListOfResponsesForAuthenticatedUser(pollsPage.getContent(), userDetails);
+        return ResponseEntity.ok().body(new PageResponseDto<>(pollsDtos, pollsPage.hasNext()));
     }
 
     @PostMapping("/{id}/submit")

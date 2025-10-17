@@ -1,5 +1,6 @@
 package com.limspyne.anon_vote.users.domain.entities;
 
+import com.limspyne.anon_vote.poll.entities.Poll;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Setter
     private List<UserActiveCode> activeCodes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+    private List<Poll> createdPolls = new ArrayList<>();
 
     public User(String email) {
         this.email = email;

@@ -1,5 +1,6 @@
 package com.limspyne.anon_vote.poll.entities;
 
+import com.limspyne.anon_vote.users.domain.entities.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,34 +15,29 @@ import java.util.*;
 @Entity
 @NoArgsConstructor
 @Table(name = "poll")
+@Getter
 public class Poll {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Getter
     private UUID id;
 
     @Column(length = 100, nullable = false)
-    @Getter
     @Setter
     private String title;
 
     @CreationTimestamp
-    @Getter
     private Instant createdAt;
 
     @UpdateTimestamp
-    @Getter
     private Instant updatedAt;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Getter
     @Setter
     @BatchSize(size = 20)
     private List<Question> questions;
 
     @ManyToOne()
     @JoinColumn(name = "category_id")
-    @Getter
     @Setter
     private PollCategory category;
 
@@ -51,19 +47,23 @@ public class Poll {
             joinColumns = @JoinColumn(name = "poll_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    @Getter
     @Setter
     private Set<PollTag> tags = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User author;
 
 //    @ManyToMany(fetch = FetchType.LAZY)
 //    @Getter
 //    private Set<User> usersAttempted;
 
-    public Poll(String title, PollCategory category) {
+    public Poll(String title, PollCategory category, User author) {
         this.title = title;
         questions = new ArrayList<>();
         setCategory(category);
         category.addPoll(this);
+        this.author = author;
     }
 
     public void addQuestion(Question question) {

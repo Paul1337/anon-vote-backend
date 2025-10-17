@@ -36,7 +36,7 @@ public class PollService {
         return pollMapper.toResponseForAuthenticatedUser(poll, isAnswered);
     }
 
-    public List<GetPoll.Response> toListOfResponsesForAuthenticatedUser(List<Poll> polls, AppUserDetails userDetails) {
+    public List<GetPoll.Response> getListOfResponsesForAuthenticatedUser(List<Poll> polls, AppUserDetails userDetails) {
         var answeredPollIds = pollAnswerRecordRepository.findAnsweredPollIdsByUserAndPollIds(userDetails.getId(), polls.stream().map(Poll::getId).toList());
         return polls.stream().map(poll -> pollMapper.toResponseForAuthenticatedUser(poll, answeredPollIds.contains(poll.getId()))).toList();
     }

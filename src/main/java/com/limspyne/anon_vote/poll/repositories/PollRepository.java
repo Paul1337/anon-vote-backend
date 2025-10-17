@@ -16,6 +16,9 @@ import java.util.UUID;
 
 @Repository
 public interface PollRepository extends JpaRepository<Poll, UUID> {
+    @EntityGraph(attributePaths = {"tags", "category"})
+    Page<Poll> findAllByAuthorId(@Param("authorId") UUID authorId, Pageable pageable);
+
     @Query("SELECT p FROM Poll p WHERE p.id = :id")
     @EntityGraph(attributePaths = {"tags", "category"})
     Optional<Poll> findById(@Param("id") UUID id);
@@ -37,11 +40,11 @@ public interface PollRepository extends JpaRepository<Poll, UUID> {
             "LEFT JOIN FETCH p.tags " +
             "LEFT JOIN FETCH p.category " +
             "WHERE p.id IN :pollIds")
-    List<Poll> findPollsWithAllTags(@Param("pollIds") List<UUID> pollIds);
+    List<Poll> findPollsWithTagsAndCategory(@Param("pollIds") List<UUID> pollIds);
 
     default Page<Poll> findAllByTitleAndTags(String title, UUID categoryId, Set<String> tags, Pageable pageable) {
         Page<UUID> pollIds = findPollIdsByFilters(title, categoryId, tags, pageable);
-        List<Poll> polls = findPollsWithAllTags(pollIds.getContent());
+        List<Poll> polls = findPollsWithTagsAndCategory(pollIds.getContent());
         return new PageImpl<>(polls, pageable, pollIds.getTotalElements());
     }
 }

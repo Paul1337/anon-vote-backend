@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: poll-add-author_id
+      author: paul
+      changes:
+        - sql: |
+            ALTER TABLE poll ADD COLUMN author_id UUID NOT NULL;
+            ALTER TABLE poll ADD CONSTRAINT poll_user_relation_fk FOREIGN KEY (author_id) REFERENCES users(id);
