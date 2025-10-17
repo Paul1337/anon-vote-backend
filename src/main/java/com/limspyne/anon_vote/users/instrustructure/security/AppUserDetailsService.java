@@ -1,17 +1,13 @@
-package com.limspyne.anon_vote.users.security;
+package com.limspyne.anon_vote.users.instrustructure.security;
 
-import com.limspyne.anon_vote.users.exceptions.UserNotFoundException;
-import com.limspyne.anon_vote.users.repositories.UserRepository;
+import com.limspyne.anon_vote.users.domain.exceptions.UserNotFoundException;
+import com.limspyne.anon_vote.users.instrustructure.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.List;
 
 @Service
 @Transactional

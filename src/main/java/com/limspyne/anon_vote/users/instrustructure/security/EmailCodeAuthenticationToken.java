@@ -1,9 +1,7 @@
-package com.limspyne.anon_vote.users.security;
+package com.limspyne.anon_vote.users.instrustructure.security;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 

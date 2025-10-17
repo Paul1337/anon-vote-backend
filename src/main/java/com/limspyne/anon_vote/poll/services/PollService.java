@@ -6,15 +6,11 @@ import com.limspyne.anon_vote.poll.exceptions.PollNotFoundException;
 import com.limspyne.anon_vote.poll.mappers.PollMapper;
 import com.limspyne.anon_vote.poll.repositories.PollAnswerRecordRepository;
 import com.limspyne.anon_vote.poll.repositories.PollRepository;
-import com.limspyne.anon_vote.users.security.AppUserDetails;
+import com.limspyne.anon_vote.users.instrustructure.security.AppUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Service

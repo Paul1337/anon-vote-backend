@@ -1,20 +1,14 @@
-package com.limspyne.anon_vote.users.entities;
+package com.limspyne.anon_vote.users.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.Date;
-import java.util.Timer;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Entity
 @Table(name = "user_active_code")

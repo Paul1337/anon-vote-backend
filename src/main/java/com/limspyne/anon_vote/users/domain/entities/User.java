@@ -1,4 +1,4 @@
-package com.limspyne.anon_vote.users.entities;
+package com.limspyne.anon_vote.users.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;

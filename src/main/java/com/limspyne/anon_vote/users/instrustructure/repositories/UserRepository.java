@@ -1,6 +1,6 @@
-package com.limspyne.anon_vote.users.repositories;
+package com.limspyne.anon_vote.users.instrustructure.repositories;
 
-import com.limspyne.anon_vote.users.entities.User;
+import com.limspyne.anon_vote.users.domain.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

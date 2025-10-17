@@ -1,7 +1,7 @@
 package com.limspyne.anon_vote.global.config;
 
-import com.limspyne.anon_vote.users.security.EmailCodeAuthenticationProvider;
-import com.limspyne.anon_vote.users.security.JwtAuthFilter;
+import com.limspyne.anon_vote.users.instrustructure.security.EmailCodeAuthenticationProvider;
+import com.limspyne.anon_vote.users.instrustructure.security.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

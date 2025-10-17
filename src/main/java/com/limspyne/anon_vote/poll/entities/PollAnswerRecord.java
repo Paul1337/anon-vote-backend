@@ -1,6 +1,6 @@
 package com.limspyne.anon_vote.poll.entities;
 
-import com.limspyne.anon_vote.users.entities.User;
+import com.limspyne.anon_vote.users.domain.entities.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

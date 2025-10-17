@@ -1,16 +1,14 @@
-package com.limspyne.anon_vote.users.security;
+package com.limspyne.anon_vote.users.instrustructure.security;
 
-import com.limspyne.anon_vote.users.entities.User;
-import com.limspyne.anon_vote.users.exceptions.UserNotFoundException;
-import com.limspyne.anon_vote.users.repositories.UserRepository;
+import com.limspyne.anon_vote.users.domain.entities.User;
+import com.limspyne.anon_vote.users.domain.exceptions.UserNotFoundException;
+import com.limspyne.anon_vote.users.instrustructure.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 public class SecurityContextService {

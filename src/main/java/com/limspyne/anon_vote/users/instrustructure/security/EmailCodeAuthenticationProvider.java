@@ -1,18 +1,13 @@
-package com.limspyne.anon_vote.users.security;
+package com.limspyne.anon_vote.users.instrustructure.security;
 
-import com.limspyne.anon_vote.users.entities.User;
-import com.limspyne.anon_vote.users.repositories.UserRepository;
+import com.limspyne.anon_vote.users.domain.entities.User;
+import com.limspyne.anon_vote.users.instrustructure.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 @Component
 public class EmailCodeAuthenticationProvider implements AuthenticationProvider {

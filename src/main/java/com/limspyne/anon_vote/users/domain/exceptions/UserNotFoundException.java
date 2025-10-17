@@ -1,4 +1,4 @@
-package com.limspyne.anon_vote.users.exceptions;
+package com.limspyne.anon_vote.users.domain.exceptions;
 
 import com.limspyne.anon_vote.shared.AppBasicException;
 
