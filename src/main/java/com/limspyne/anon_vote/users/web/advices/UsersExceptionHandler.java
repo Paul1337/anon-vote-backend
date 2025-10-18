@@ -1,6 +1,6 @@
 package com.limspyne.anon_vote.users.web.advices;
 
-import com.limspyne.anon_vote.shared.HttpErrorResponse;
+import com.limspyne.anon_vote.shared.web.dto.HttpErrorResponse;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

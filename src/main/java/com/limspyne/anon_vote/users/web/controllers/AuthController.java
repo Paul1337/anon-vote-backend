@@ -1,7 +1,7 @@
 package com.limspyne.anon_vote.users.web.controllers;
 
-import com.limspyne.anon_vote.users.web.dto.AuthUser;
-import com.limspyne.anon_vote.users.web.dto.SendCode;
+import com.limspyne.anon_vote.users.dto.AuthUser;
+import com.limspyne.anon_vote.users.dto.SendCode;
 import com.limspyne.anon_vote.users.instrastructure.security.EmailCodeAuthenticationToken;
 import com.limspyne.anon_vote.users.instrastructure.security.JwtTokenProviderService;
 import com.limspyne.anon_vote.users.domain.services.SendCodeService;

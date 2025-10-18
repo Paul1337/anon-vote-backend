@@ -1,8 +1,6 @@
 package com.limspyne.anon_vote.poll.domain.exceptions;
 
-import com.limspyne.anon_vote.shared.AppBasicException;
-
-import java.util.UUID;
+import com.limspyne.anon_vote.shared.domain.exceptions.AppBasicException;
 
 public class SubmitNotUniqueException extends AppBasicException {
     public SubmitNotUniqueException() {

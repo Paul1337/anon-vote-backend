@@ -71,6 +71,7 @@ services:
       JWT_EXPIRATION: ${JWT_EXPIRATION}
       MAIL_USERNAME: ${MAIL_USERNAME}
       MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS}
     volumes:
       - ../../src:/app/src:rw
       - ../../pom.xml:/app/pom.xml:rw

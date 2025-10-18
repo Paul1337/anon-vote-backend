@@ -1,4 +1,4 @@
-package com.limspyne.anon_vote.shared;
+package com.limspyne.anon_vote.shared.web.dto;
 
 import java.util.List;
 

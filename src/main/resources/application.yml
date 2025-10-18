@@ -30,6 +30,12 @@ spring:
       poll-interval: 1000
       quiet-period: 400
 
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 20
+
 springdoc:
   api-docs:
     path: '/api-doc'
@@ -48,3 +54,4 @@ jwt:
 mail:
   username: ${MAIL_USERNAME}
   password: ${MAIL_PASSWORD}
+  from: ${MAIL_FROM_ADDRESS}

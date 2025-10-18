@@ -20,6 +20,3 @@ COPY ../../docker/dev/start.sh /app/start.sh
 RUN chmod +x /app/start.sh
 
 CMD ["/app/start.sh"]
-
-#CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.fork=false"]
-

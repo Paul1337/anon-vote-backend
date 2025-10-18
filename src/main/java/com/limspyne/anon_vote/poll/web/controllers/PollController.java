@@ -14,7 +14,7 @@ import com.limspyne.anon_vote.poll.domain.entities.Poll;
 import com.limspyne.anon_vote.poll.domain.services.PollService;
 import com.limspyne.anon_vote.poll.domain.services.PollSubmitService;
 import com.limspyne.anon_vote.poll.domain.services.PollTagService;
-import com.limspyne.anon_vote.shared.dto.PageResponseDto;
+import com.limspyne.anon_vote.shared.web.dto.PageResponseDto;
 import com.limspyne.anon_vote.users.domain.services.UserService;
 import com.limspyne.anon_vote.users.instrastructure.security.AppUserDetails;
 import io.swagger.v3.oas.annotations.Operation;

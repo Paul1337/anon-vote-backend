@@ -1,4 +1,4 @@
-package com.limspyne.anon_vote.shared.dto;
+package com.limspyne.anon_vote.shared.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -2,8 +2,8 @@ package com.limspyne.anon_vote.poll.web.advices;
 
 import com.limspyne.anon_vote.poll.domain.exceptions.PollAlreadyExistException;
 import com.limspyne.anon_vote.poll.domain.exceptions.PollNotFoundException;
-import com.limspyne.anon_vote.shared.AppBasicException;
-import com.limspyne.anon_vote.shared.HttpErrorResponse;
+import com.limspyne.anon_vote.shared.domain.exceptions.AppBasicException;
+import com.limspyne.anon_vote.shared.web.dto.HttpErrorResponse;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

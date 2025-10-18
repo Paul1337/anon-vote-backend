@@ -1,7 +1,7 @@
 package com.limspyne.anon_vote.global;
 
-import com.limspyne.anon_vote.shared.AppBasicException;
-import com.limspyne.anon_vote.shared.HttpErrorResponse;
+import com.limspyne.anon_vote.shared.domain.exceptions.AppBasicException;
+import com.limspyne.anon_vote.shared.web.dto.HttpErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.annotation.Order;
