@@ -5,7 +5,7 @@ import com.limspyne.anon_vote.email.services.TextMailSender;
 import com.limspyne.anon_vote.users.web.dto.SendCode;
 import com.limspyne.anon_vote.users.domain.entities.User;
 import com.limspyne.anon_vote.users.domain.entities.UserActiveCode;
-import com.limspyne.anon_vote.users.instrustructure.repositories.UserRepository;
+import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

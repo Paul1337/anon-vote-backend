@@ -2,12 +2,11 @@ package com.limspyne.anon_vote.users.web.controllers;
 
 import com.limspyne.anon_vote.users.web.dto.AuthUser;
 import com.limspyne.anon_vote.users.web.dto.SendCode;
-import com.limspyne.anon_vote.users.instrustructure.security.EmailCodeAuthenticationToken;
-import com.limspyne.anon_vote.users.instrustructure.security.JwtTokenProviderService;
+import com.limspyne.anon_vote.users.instrastructure.security.EmailCodeAuthenticationToken;
+import com.limspyne.anon_vote.users.instrastructure.security.JwtTokenProviderService;
 import com.limspyne.anon_vote.users.domain.services.SendCodeService;
 import com.limspyne.anon_vote.users.web.infrastructure.AuthCookieManager;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;

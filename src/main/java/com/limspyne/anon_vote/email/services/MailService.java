@@ -40,7 +40,7 @@ public class MailService implements TextMailSender {
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(EMAIL_FROM));
+            message.setFrom(new InternetAddress("noreply@anon-vote.ru"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(dto.getTo()));
             message.setSubject(dto.getSubject());
             message.setText(dto.getText());
