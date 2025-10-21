@@ -2,6 +2,7 @@ package com.limspyne.anon_vote.users.domain.services;
 
 import com.limspyne.anon_vote.shared.inftrastrucure.email.dto.HtmlMail;
 import com.limspyne.anon_vote.shared.inftrastrucure.email.services.HtmlMailSender;
+import com.limspyne.anon_vote.users.domain.exceptions.CodeSendLimitException;
 import com.limspyne.anon_vote.users.domain.exceptions.CouldNotSendCodeException;
 import com.limspyne.anon_vote.users.dto.SendCode;
 import com.limspyne.anon_vote.users.domain.entities.User;
@@ -10,6 +11,7 @@ import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
 import jakarta.mail.MessagingException;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,13 +38,22 @@ public class SendCodeService {
     @Autowired
     private UserService userService;
 
-    private String CONFIRM_EMAIL_TEMPLATE = "templates/emails/confirm-email.html";
+    private static final long MIN_SECONDS_BETWEEN_REQUESTS = 60;
+    private static final String CONFIRM_EMAIL_TEMPLATE = "templates/emails/confirm-email.html";
 
     @Transactional
     public void sendCode(SendCode.Request request) {
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
         var user = userOptional.orElseGet(() -> userService.createUserByEmail(request.getEmail()));
         var code = new UserActiveCode(generateCode());
+
+        UserActiveCode lastActiveCode = user.getActiveCodes().stream().max(Comparator.comparing(UserActiveCode::getCreatedAt))
+                .orElse(null);
+
+        if (lastActiveCode != null && Duration.between(lastActiveCode.getCreatedAt(), LocalDateTime.now()).toSeconds() < MIN_SECONDS_BETWEEN_REQUESTS) {
+            throw new CodeSendLimitException(request.getEmail());
+        }
+
         user.addActiveCode(code);
         Hibernate.initialize(user.getActiveCodes());
         userRepository.save(user);
