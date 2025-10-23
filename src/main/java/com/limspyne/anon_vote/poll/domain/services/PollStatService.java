@@ -18,7 +18,7 @@ public class PollStatService {
     private PollAnswerRecordRepository pollAnswerRecordRepository;
 
     @Autowired
-    private PollService pollService;
+    private PollQueryService pollQueryService;
 
     public Map<UUID, Map<UUID, Integer>> getPollStat(UUID pollId) {
 //        var poll = pollService.getPoll(pollId);

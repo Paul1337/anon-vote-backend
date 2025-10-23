@@ -46,11 +46,6 @@ public class AuthController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookieHeader).build();
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<?> refresh() {
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getMe() {

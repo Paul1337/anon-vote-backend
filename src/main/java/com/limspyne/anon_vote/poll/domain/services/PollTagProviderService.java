@@ -11,11 +11,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class PollTagService {
+public class PollTagProviderService {
     @Autowired
     private PollTagRepository pollTagRepository;
 
-    public Set<PollTag> findOrCreateTagsOfNames(Set<String> tagNames) {
+    public Set<PollTag> provideTagsOfNames(Set<String> tagNames) {
         if (tagNames.isEmpty()) return new HashSet<>();
         Set<PollTag> existingTags = new HashSet<>(pollTagRepository.findAllByNameIn(tagNames));
 

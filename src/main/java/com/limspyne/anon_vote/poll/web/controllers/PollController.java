@@ -5,15 +5,15 @@ import com.limspyne.anon_vote.poll.web.dto.SubmitPoll;
 import com.limspyne.anon_vote.poll.domain.entities.PollTag;
 import com.limspyne.anon_vote.poll.domain.entities.Question;
 import com.limspyne.anon_vote.poll.domain.exceptions.CategoryNotFoundException;
-import com.limspyne.anon_vote.poll.infrastructure.mappers.PollMapper;
+import com.limspyne.anon_vote.poll.domain.mappers.PollMapper;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.CategoryRepository;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
 import com.limspyne.anon_vote.poll.web.dto.CreatePoll;
 import com.limspyne.anon_vote.poll.web.dto.GetPoll;
 import com.limspyne.anon_vote.poll.domain.entities.Poll;
-import com.limspyne.anon_vote.poll.domain.services.PollService;
+import com.limspyne.anon_vote.poll.domain.services.PollQueryService;
 import com.limspyne.anon_vote.poll.domain.services.PollSubmitService;
-import com.limspyne.anon_vote.poll.domain.services.PollTagService;
+import com.limspyne.anon_vote.poll.domain.services.PollTagProviderService;
 import com.limspyne.anon_vote.shared.web.dto.PageResponseDto;
 import com.limspyne.anon_vote.users.domain.services.UserService;
 import com.limspyne.anon_vote.users.instrastructure.security.AppUserDetails;
@@ -47,10 +47,10 @@ public class PollController {
     private PollMapper pollMapper;
 
     @Autowired
-    private PollService pollService;
+    private PollQueryService pollQueryService;
 
     @Autowired
-    private PollTagService pollTagService;
+    private PollTagProviderService pollTagProviderService;
 
     @Autowired
     private PollSubmitService pollSubmitService;
@@ -68,7 +68,7 @@ public class PollController {
 
         Poll poll = new Poll(dto.title(), pollCategory, author);
 
-        Set<PollTag> tags = pollTagService.findOrCreateTagsOfNames(dto.tags());
+        Set<PollTag> tags = pollTagProviderService.provideTagsOfNames(dto.tags());
         poll.setTags(tags);
 
         List<Question> questions = dto.questions().stream().map(qstDto -> {
@@ -83,7 +83,7 @@ public class PollController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(pollMapper.toResponseForAuthenticatedUser(poll, false));
+                .body(pollMapper.toResponseForAnonymousUser(poll));
     }
 
     @GetMapping("/search")
@@ -98,7 +98,7 @@ public class PollController {
         List<GetPoll.Response> pollsDtos;
 
         if (userDetails != null) {
-            pollsDtos = pollService.getListOfResponsesForAuthenticatedUser(pollsPage.getContent(), userDetails);
+            pollsDtos = pollMapper.toListOfResponsesForAuthenticatedUser(pollsPage.getContent(), userDetails);
         } else {
             pollsDtos = pollsPage.stream().map(poll -> pollMapper.toResponseForAnonymousUser(poll)).toList();
         }
@@ -110,7 +110,7 @@ public class PollController {
     public ResponseEntity<PageResponseDto<GetPoll.Response>> searchPolls(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @AuthenticationPrincipal AppUserDetails userDetails) {
         PageRequest pageRequest = PageRequest.of(page, size);
         var pollsPage = pollRepository.findAllByAuthorId(userDetails.getId(), pageRequest);
-        var pollsDtos = pollService.getListOfResponsesForAuthenticatedUser(pollsPage.getContent(), userDetails);
+        var pollsDtos = pollMapper.toListOfResponsesForAuthenticatedUser(pollsPage.getContent(), userDetails);
         return ResponseEntity.ok().body(new PageResponseDto<>(pollsDtos, pollsPage.hasNext()));
     }
 
@@ -128,12 +128,12 @@ public class PollController {
     @GetMapping("/{id}")
     public ResponseEntity<GetPoll.Response> getPoll(@PathVariable(name = "id") UUID pollId, @AuthenticationPrincipal AppUserDetails userDetails) {
         GetPoll.Response pollResponse;
+        var poll = pollQueryService.getPoll(pollId);
         if (userDetails != null) {
-            pollResponse = pollService.getPollForAuthenticatedUser(pollId, userDetails);
+            pollResponse = pollMapper.toResponseForAuthenticatedUser(poll, userDetails);
         } else {
-            pollResponse = pollService.getPollForAnonymousUser(pollId);
+            pollResponse = pollMapper.toResponseForAnonymousUser(poll);
         }
-
         return ResponseEntity.status(HttpStatus.OK).body(pollResponse);
     }
 
