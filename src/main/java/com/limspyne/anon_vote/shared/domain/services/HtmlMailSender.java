@@ -1,4 +1,4 @@
-package com.limspyne.anon_vote.shared.inftrastrucure.email.services;
+package com.limspyne.anon_vote.shared.domain.services;
 
 
 import com.limspyne.anon_vote.shared.inftrastrucure.email.dto.HtmlMail;

@@ -1,15 +1,12 @@
 package com.limspyne.anon_vote.poll.web.controllers;
 
-import com.limspyne.anon_vote.poll.web.dto.SearchPolls;
-import com.limspyne.anon_vote.poll.web.dto.SubmitPoll;
+import com.limspyne.anon_vote.poll.web.dto.*;
 import com.limspyne.anon_vote.poll.domain.entities.PollTag;
 import com.limspyne.anon_vote.poll.domain.entities.Question;
 import com.limspyne.anon_vote.poll.domain.exceptions.CategoryNotFoundException;
 import com.limspyne.anon_vote.poll.domain.mappers.PollMapper;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.CategoryRepository;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
-import com.limspyne.anon_vote.poll.web.dto.CreatePoll;
-import com.limspyne.anon_vote.poll.web.dto.GetPoll;
 import com.limspyne.anon_vote.poll.domain.entities.Poll;
 import com.limspyne.anon_vote.poll.domain.services.PollQueryService;
 import com.limspyne.anon_vote.poll.domain.services.PollSubmitService;
@@ -130,12 +127,13 @@ public class PollController {
         GetPoll.Response pollResponse;
         var poll = pollQueryService.getPoll(pollId);
         if (userDetails != null) {
-            pollResponse = pollMapper.toResponseForAuthenticatedUser(poll, userDetails);
+            pollResponse = pollMapper.toResponseWithUserSpecificData(poll, userDetails);
         } else {
             pollResponse = pollMapper.toResponseForAnonymousUser(poll);
         }
         return ResponseEntity.status(HttpStatus.OK).body(pollResponse);
     }
+
 
 
 }

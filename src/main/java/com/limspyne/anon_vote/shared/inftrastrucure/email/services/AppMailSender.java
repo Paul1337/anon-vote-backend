@@ -1,5 +1,7 @@
 package com.limspyne.anon_vote.shared.inftrastrucure.email.services;
 
+import com.limspyne.anon_vote.shared.domain.services.HtmlMailSender;
+import com.limspyne.anon_vote.shared.domain.services.TextMailSender;
 import com.limspyne.anon_vote.shared.inftrastrucure.email.dto.HtmlMail;
 import com.limspyne.anon_vote.shared.inftrastrucure.email.dto.SimpleTextMail;
 import jakarta.annotation.PostConstruct;

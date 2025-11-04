@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: poll_anwer_record-add-foreign-key-poll_id
+      author: paul
+      changes:
+        - sql: |
+            ALTER TABLE poll_answer_record ADD CONSTRAINT fk_poll_answer_record_poll FOREIGN KEY (poll_id) REFERENCES poll(id);

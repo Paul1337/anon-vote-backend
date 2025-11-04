@@ -1,6 +1,5 @@
 package com.limspyne.anon_vote.poll.domain.entities;
 
-import com.limspyne.anon_vote.users.domain.entities.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,10 +18,6 @@ public class PollAnswerRecord {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @Column(name = "fingerprint")
     @Setter
     private String fingerprint;
@@ -34,8 +29,7 @@ public class PollAnswerRecord {
     @OneToMany(mappedBy = "answerRecord", cascade = CascadeType.ALL)
     private List<PollQuestionAnswer> answers = new ArrayList<>();
 
-    public PollAnswerRecord(User user, Poll poll, List<PollQuestionAnswer> answers) {
-        this.user = user;
+    public PollAnswerRecord(Poll poll, List<PollQuestionAnswer> answers) {
         this.poll = poll;
         this.answers = answers;
 

@@ -4,6 +4,7 @@ import com.limspyne.anon_vote.poll.domain.entities.Poll;
 import com.limspyne.anon_vote.poll.domain.entities.PollAnswerRecord;
 import com.limspyne.anon_vote.poll.domain.entities.PollQuestionAnswer;
 import com.limspyne.anon_vote.poll.domain.exceptions.PollNotFoundException;
+import com.limspyne.anon_vote.poll.domain.exceptions.SubmitNotUniqueException;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollAnswerRecordRepository;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.QuestionRepository;
@@ -37,15 +38,19 @@ public class PollSubmitService {
 
     @Transactional
     public void submitPoll(UUID pollId, Map<UUID, String> answersMap) {
-        if (!pollRepository.existsById(pollId)) throw new PollNotFoundException(pollId);
         User user = securityContextService.getCurrentUser();
         Poll poll = pollRepository.findById(pollId).orElseThrow(() -> new PollNotFoundException(pollId));
+
+        if (pollRepository.existsByIdAndAttemptedUsersId(poll.getId(), user.getId())) {
+            throw new SubmitNotUniqueException();
+        }
 
         List<PollQuestionAnswer> answersEntities = answersMap.entrySet().stream().map(
                 (entry) -> new PollQuestionAnswer(questionRepository.getReferenceById(entry.getKey()), entry.getValue())
         ).toList();
 
-        PollAnswerRecord answerRecord = new PollAnswerRecord(user, poll, answersEntities);
+        PollAnswerRecord answerRecord = new PollAnswerRecord(poll, answersEntities);
+        poll.addAttemptedUser(user);
         pollAnswerRecordRepository.save(answerRecord);
     }
 }

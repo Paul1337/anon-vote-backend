@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: poll_anwer_record-drop-user_id-instead-of-poll_id
+      comment: making poll answers anonymous (previous migration fix)
+      author: paul
+      changes:
+        - sql: |
+            ALTER TABLE poll_answer_record ADD COLUMN poll_id UUID NOT NULL;
+            ALTER TABLE poll_answer_record DROP COLUMN user_id;

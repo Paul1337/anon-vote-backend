@@ -1,7 +1,7 @@
 package com.limspyne.anon_vote.users.domain.services;
 
 import com.limspyne.anon_vote.shared.inftrastrucure.email.dto.HtmlMail;
-import com.limspyne.anon_vote.shared.inftrastrucure.email.services.HtmlMailSender;
+import com.limspyne.anon_vote.shared.domain.services.HtmlMailSender;
 import com.limspyne.anon_vote.users.domain.exceptions.CodeSendLimitException;
 import com.limspyne.anon_vote.users.domain.exceptions.CouldNotSendCodeException;
 import com.limspyne.anon_vote.users.dto.SendCode;
@@ -11,7 +11,6 @@ import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
 import jakarta.mail.MessagingException;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

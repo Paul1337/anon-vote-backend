@@ -14,10 +14,6 @@ import java.util.UUID;
 public interface PollAnswerRecordRepository extends JpaRepository<PollAnswerRecord, UUID> {
     boolean existsByPollIdAndFingerprint(UUID pollId, String fingerprint);
 
-    boolean existsByPollIdAndUserId(UUID pollId, UUID userId);
-
     Set<PollAnswerRecord> findAllByPollId(UUID pollId);
 
-    @Query("SELECT r.poll.id FROM PollAnswerRecord r WHERE r.user.id = :userId AND r.poll.id IN :pollIds")
-    Set<UUID> findAnsweredPollIdsByUserAndPollIds(@Param("userId") UUID userId, @Param("pollIds") List<UUID> pollIds);
 }

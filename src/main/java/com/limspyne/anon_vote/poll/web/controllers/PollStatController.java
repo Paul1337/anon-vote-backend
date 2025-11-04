@@ -1,5 +1,8 @@
 package com.limspyne.anon_vote.poll.web.controllers;
 
+import com.limspyne.anon_vote.poll.domain.services.PollStatService;
+import com.limspyne.anon_vote.poll.web.dto.GetBasicStat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,9 +15,14 @@ import java.util.UUID;
 @RequestMapping("/polls")
 public class PollStatController {
 
-    @GetMapping("/{pollId}/stats")
-    public ResponseEntity<Void> getPollStats(@PathVariable("pollId") UUID pollId) {
+    @Autowired
+    private PollStatService pollStatService;
 
-        return ResponseEntity.ok().build();
+    @GetMapping("/{pollId}/basicStat")
+    public ResponseEntity<GetBasicStat.Response> getPollStats(@PathVariable("pollId") UUID pollId) {
+        var statResponse = pollStatService.getPollStat(pollId);
+        return ResponseEntity.ok().body(new GetBasicStat.Response(statResponse));
     }
+
+
 }

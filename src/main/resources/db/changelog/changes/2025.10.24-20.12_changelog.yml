@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: poll_anwer_record-drop-poll_id
+      comment: making poll answers anonymous
+      author: paul
+      changes:
+        - sql: |
+            ALTER TABLE poll_answer_record DROP COLUMN poll_id;
+  - changeSet:
+      id: create-table-poll_answered_users-relation
+      comment: creating table for poll and attempted users many-to-many relation
+      author: paul
+      changes:
+        - sql: |
+            CREATE TABLE poll_answered_users (
+              poll_id UUID NOT NULL REFERENCES poll(id) ON DELETE CASCADE,
+              user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+              PRIMARY KEY (poll_id, user_id)
+            );

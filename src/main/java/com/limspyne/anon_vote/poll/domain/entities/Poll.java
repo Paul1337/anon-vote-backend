@@ -2,12 +2,13 @@ package com.limspyne.anon_vote.poll.domain.entities;
 
 import com.limspyne.anon_vote.users.domain.entities.User;
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
+import jakarta.xml.bind.annotation.XmlSchemaTypes;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 
 import java.time.Instant;
 import java.util.*;
@@ -50,13 +51,19 @@ public class Poll {
     @Setter
     private Set<PollTag> tags = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "author_id")
     private User author;
 
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @Getter
-//    private Set<User> usersAttempted;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "poll_answered_users",
+            joinColumns = @JoinColumn(name = "poll_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @Setter
+    private Set<User> attemptedUsers = new HashSet<>();
 
     public Poll(String title, PollCategory category, User author) {
         this.title = title;
@@ -69,6 +76,10 @@ public class Poll {
     public void addQuestion(Question question) {
         questions.add(question);
         question.setPoll(this);
+    }
+
+    public void addAttemptedUser(User user) {
+        attemptedUsers.add(user);
     }
 
 }

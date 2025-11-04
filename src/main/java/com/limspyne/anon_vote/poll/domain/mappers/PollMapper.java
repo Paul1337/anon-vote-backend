@@ -1,7 +1,7 @@
 package com.limspyne.anon_vote.poll.domain.mappers;
 
-import com.limspyne.anon_vote.poll.domain.exceptions.PollNotFoundException;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollAnswerRecordRepository;
+import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
 import com.limspyne.anon_vote.poll.web.dto.GetPoll;
 import com.limspyne.anon_vote.poll.domain.entities.Poll;
 import com.limspyne.anon_vote.users.instrastructure.security.AppUserDetails;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class PollMapper {
@@ -18,25 +17,23 @@ public class PollMapper {
     private ModelMapper modelMapper;
 
     @Autowired
-    private PollAnswerRecordRepository pollAnswerRecordRepository;
+    private PollRepository pollRepository;
 
     public GetPoll.Response toResponseForAnonymousUser(Poll poll) {
-        GetPoll.Response response = modelMapper.map(poll, GetPoll.Response.class);
-        response.setAnswered(false);
-        return response;
+        return toResponseWithUserSpecificData(poll, false);
     }
 
-    public GetPoll.Response toResponseForAuthenticatedUser(Poll poll, AppUserDetails userDetails) {
-        var isAnswered = pollAnswerRecordRepository.existsByPollIdAndUserId(poll.getId(), userDetails.getId());
-        return toResponseForAuthenticatedUser(poll, isAnswered);
+    public GetPoll.Response toResponseWithUserSpecificData(Poll poll, AppUserDetails userDetails) {
+        var isAnswered = pollRepository.existsByIdAndAttemptedUsersId(poll.getId(), userDetails.getId());
+        return toResponseWithUserSpecificData(poll, isAnswered);
     }
 
     public List<GetPoll.Response> toListOfResponsesForAuthenticatedUser(List<Poll> polls, AppUserDetails userDetails) {
-        var answeredPollIds = pollAnswerRecordRepository.findAnsweredPollIdsByUserAndPollIds(userDetails.getId(), polls.stream().map(Poll::getId).toList());
-        return polls.stream().map(poll -> toResponseForAuthenticatedUser(poll, answeredPollIds.contains(poll.getId()))).toList();
+        var answeredPollIds = pollRepository.findIdByAttemptedUsersIdAndIdIn(userDetails.getId(), polls.stream().map(Poll::getId).toList());
+        return polls.stream().map(poll -> toResponseWithUserSpecificData(poll, answeredPollIds.contains(poll.getId()))).toList();
     }
 
-    private GetPoll.Response toResponseForAuthenticatedUser(Poll poll, boolean isAnswered) {
+    private GetPoll.Response toResponseWithUserSpecificData(Poll poll, boolean isAnswered) {
         GetPoll.Response response = modelMapper.map(poll, GetPoll.Response.class);
         response.setAnswered(isAnswered);
         return response;
