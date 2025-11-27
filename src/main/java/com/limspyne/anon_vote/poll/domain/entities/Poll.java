@@ -43,6 +43,7 @@ public class Poll {
     private PollCategory category;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Fetch(FetchMode.SUBSELECT)
     @JoinTable(
             name = "poll_tag_relation",
             joinColumns = @JoinColumn(name = "poll_id"),
