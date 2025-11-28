@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: poll_category-add-path
+      author: paul
+      changes:
+        - sql: |
+            ALTER TABLE poll_category ADD COLUMN path TEXT;
+            CREATE INDEX idx_poll_category_path ON poll_category(path);
+
+        - sql: |
+            -- Рекурсивное обновление path для существующих данных
+            WITH RECURSIVE category_tree AS (
+              SELECT id, parent_category_id, CAST(id AS TEXT) AS path
+              FROM poll_category 
+              WHERE parent_category_id IS NULL
+            
+              UNION ALL
+            
+              SELECT c.id, c.parent_category_id, 
+                     ct.path || '/' || c.id
+              FROM poll_category c
+              INNER JOIN category_tree ct ON c.parent_category_id = ct.id
+            )
+            UPDATE poll_category 
+            SET path = '/' || ct.path || '/'
+            FROM category_tree ct
+            WHERE poll_category.id = ct.id;

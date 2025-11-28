@@ -11,33 +11,40 @@ import java.util.UUID;
 @Entity
 @Table(name = "poll_category", indexes = @Index(name = "idx_poll_category_name", columnList = "name"))
 @NoArgsConstructor
+@Getter
 public class PollCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Getter
     private UUID id;
 
-    @Getter
     @Column(length = 128)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Getter
+    @JoinColumn(name = "parent_category_id")
     private PollCategory parentCategory;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parentCategory")
-    @Getter
     @Setter
     private List<PollCategory> childCategories;
 
-    @OneToMany(mappedBy = "category")
-    @Getter
-    private List<Poll> polls;
+    @Column(name = "path")
+    private String path;
 
-    public void addPoll(Poll poll) {
-        if (poll != null && !polls.contains(poll)) {
-            polls.add(poll);
-            poll.setCategory(this);
+    public PollCategory(String name, PollCategory parentCategory, List<PollCategory> childCategories) {
+        this.name = name;
+        this.parentCategory = parentCategory;
+        this.childCategories = childCategories;
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void calculatePath() {
+        if (parentCategory == null) {
+            this.path = id != null ? id + "/" : "/";
+        } else {
+            this.path = parentCategory.getPath() + (id != null ? id + "/" : "/");
         }
     }
+
 }

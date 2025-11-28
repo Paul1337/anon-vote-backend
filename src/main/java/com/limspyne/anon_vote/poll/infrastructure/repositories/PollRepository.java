@@ -23,17 +23,17 @@ public interface PollRepository extends JpaRepository<Poll, UUID> {
     @EntityGraph(attributePaths = {"tags", "category"})
     Optional<Poll> findById(@Param("id") UUID id);
 
-    @Query("SELECT DISTINCT p FROM Poll p WHERE p.title ILIKE %:title% AND (:categoryId IS NULL or p.category.id = :categoryId)")
-    @EntityGraph(attributePaths = { "category" })
+    @Query("SELECT p FROM Poll p WHERE p.title ILIKE %:title% AND " +
+            "(:categoryId IS NULL or p.category.path LIKE CONCAT( (SELECT cat.path FROM PollCategory cat WHERE cat.id = :categoryId), '%') )")
     Page<Poll> findAllByTitle(@Param("title") String title, @Param("categoryId") UUID categoryId, Pageable pageable);
 
     @Query("SELECT DISTINCT p.id FROM Poll p JOIN p.tags t " +
             "WHERE t.name IN (:tags) " +
             "AND p.title ILIKE %:title% " +
-            "AND (:categoryId IS NULL OR p.category.id = :categoryId)")
+            "AND (:categoryId IS NULL or p.category.path LIKE CONCAT((SELECT cat.path FROM PollCategory cat WHERE cat.id = :categoryId), '%'))")
     Page<UUID> findPollIdsByFilters(@Param("title") String title, @Param("categoryId") UUID categoryId, @Param("tags") Set<String> tags, Pageable pageable);
 
-    @Query("SELECT p FROM Poll p WHERE p.id IN :ids")
+    @Query("SELECT p FROM Poll p WHERE p.id IN :pollIds")
     @EntityGraph(attributePaths = { "category" })
     List<Poll> findPollsWithTagsAndCategory(@Param("pollIds") List<UUID> pollIds);
 

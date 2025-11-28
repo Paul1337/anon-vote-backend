@@ -33,3 +33,5 @@ databaseChangeLog:
       file: db/changelog/changes/2025.10.24-20.33_changelog.yml
   - include:
       file: db/changelog/changes/2025.10.24-20.42_changelog.yml
+  - include:
+      file: db/changelog/changes/2025.11.28:poll_category-add-path_changelog.yml

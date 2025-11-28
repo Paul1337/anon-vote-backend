@@ -60,6 +60,8 @@ public class CreatePoll {
             @NotBlank(message = "Нужно передать categoryId (id категории)")
             String categoryId,
 
+            String categoryName,
+
             Set<String> tags
     ) {}
 }

@@ -70,7 +70,6 @@ public class Poll {
         this.title = title;
         questions = new ArrayList<>();
         setCategory(category);
-        category.addPoll(this);
         this.author = author;
     }
 
