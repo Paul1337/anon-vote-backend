@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: poll_answer_record-add-created_at-column
+      author: paul
+      changes:
+        - sql: |
+            ALTER TABLE poll_answer_record 
+            ADD COLUMN created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP;
+            CREATE INDEX idx_poll_created_at ON poll_answer_record(created_at);

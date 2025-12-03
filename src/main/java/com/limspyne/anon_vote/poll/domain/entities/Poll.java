@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
 import java.util.*;
@@ -26,10 +28,12 @@ public class Poll {
     @Setter
     private String title;
 
-    @CreationTimestamp
+    @CreatedDate
+    @Column(name = "created_at")
     private Instant createdAt;
 
-    @UpdateTimestamp
+    @LastModifiedDate
+    @Column(name = "updated_at")
     private Instant updatedAt;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -52,6 +52,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<HttpErrorResponse> handleDataAccessException(DataAccessException ex) {
+        ex.printStackTrace();
+
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new HttpErrorResponse("Database error", List.of(ex.getMessage())));
@@ -66,6 +68,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<HttpErrorResponse> handleRuntimeException(RuntimeException ex) {
+        ex.printStackTrace();
+
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new HttpErrorResponse("Something went wrong"));

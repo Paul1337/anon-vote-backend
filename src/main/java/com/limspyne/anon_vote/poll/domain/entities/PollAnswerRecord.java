@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import org.springframework.data.annotation.CreatedDate;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +28,11 @@ public class PollAnswerRecord {
     @JoinColumn(name = "poll_id")
     private Poll poll;
 
-    @OneToMany(mappedBy = "answerRecord", cascade = CascadeType.ALL)
+    @CreatedDate
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "answerRecord", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PollQuestionAnswer> answers = new ArrayList<>();
 
     public PollAnswerRecord(Poll poll, List<PollQuestionAnswer> answers) {
