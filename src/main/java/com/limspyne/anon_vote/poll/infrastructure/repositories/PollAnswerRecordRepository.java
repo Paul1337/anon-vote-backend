@@ -26,13 +26,14 @@ public interface PollAnswerRecordRepository extends JpaRepository<PollAnswerReco
     @Query("""
         SELECT
             DATE(record.createdAt) as date,
+            ans.question.id as questionId,
             ans.answer as answerText,
             COUNT(ans.id) as answerCount
         FROM PollAnswerRecord record
         JOIN record.answers ans
         WHERE record.createdAt BETWEEN :startDate AND :endDate
         AND record.poll.id = :pollId
-        GROUP BY DATE(record.createdAt), ans.answer
+        GROUP BY DATE(record.createdAt), ans.question.id, ans.answer
         ORDER BY date ASC
         """)
     List<AnswerStatProjection> getAnswerStatsByDateRangeGroupedByDays(
@@ -42,12 +43,13 @@ public interface PollAnswerRecordRepository extends JpaRepository<PollAnswerReco
 
     @Query("""
         SELECT
+            ans.question.id as questionId,
             ans.answer as answerText,
             COUNT(ans.id) as answerCount
         FROM PollAnswerRecord record
         JOIN record.answers ans
         WHERE record.createdAt < :date AND record.poll.id = :pollId
-        GROUP BY ans.answer
+        GROUP BY ans.question.id, ans.answer
         """)
     List<StatProjection> getAnswerStatsUpToInstant(@Param("pollId") UUID pollId, @Param("date") LocalDateTime date);
 }

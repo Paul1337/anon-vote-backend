@@ -2,6 +2,7 @@ package com.limspyne.anon_vote.poll.web.controllers;
 
 import com.limspyne.anon_vote.poll.domain.services.PollStatService;
 import com.limspyne.anon_vote.poll.web.dto.GetBasicStat;
+import com.limspyne.anon_vote.poll.web.dto.GetDailyStat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,8 +32,8 @@ public class PollStatController {
     }
 
     @GetMapping("/{pollId}/dailyStat")
-    public ResponseEntity<Map<LocalDate, Map<String, Long>>> getTimeStat(@PathVariable("pollId") UUID pollId, @RequestParam(defaultValue = "7") int daysBefore) {
-        var statResult = pollStatService.getAnswerStatsByDay(pollId, LocalDate.now().minusDays(daysBefore), LocalDate.now());
+    public ResponseEntity<GetDailyStat.Response> getTimeStat(@PathVariable("pollId") UUID pollId, @RequestParam(defaultValue = "7") int daysBefore) {
+        var statResult = pollStatService.getAnswerStatsByDay(pollId, LocalDate.now().minusDays(daysBefore - 1), LocalDate.now());
         return ResponseEntity.ok().body(statResult);
     }
 

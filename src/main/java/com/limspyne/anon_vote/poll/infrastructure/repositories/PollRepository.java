@@ -20,7 +20,7 @@ public interface PollRepository extends JpaRepository<Poll, UUID> {
     Page<Poll> findAllByAuthorId(@Param("authorId") UUID authorId, Pageable pageable);
 
     @Query("SELECT p FROM Poll p WHERE p.id = :id")
-    @EntityGraph(attributePaths = {"tags", "category"})
+    @EntityGraph(attributePaths = { "tags", "category" })
     Optional<Poll> findById(@Param("id") UUID id);
 
     @Query("SELECT p FROM Poll p WHERE p.title ILIKE %:title% AND " +

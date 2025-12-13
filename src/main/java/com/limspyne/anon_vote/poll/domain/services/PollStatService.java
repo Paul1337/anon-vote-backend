@@ -1,22 +1,28 @@
 package com.limspyne.anon_vote.poll.domain.services;
 
+import com.limspyne.anon_vote.poll.domain.entities.Poll;
 import com.limspyne.anon_vote.poll.domain.exceptions.PollNotFoundException;
 import com.limspyne.anon_vote.poll.infrastructure.dto.AnswerStatProjection;
 import com.limspyne.anon_vote.poll.infrastructure.dto.StatProjection;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollAnswerRecordRepository;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
+import com.limspyne.anon_vote.poll.web.dto.GetDailyStat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +36,7 @@ public class PollStatService {
     @Autowired
     private PollQueryService pollQueryService;
 
+    @Transactional
     public Map<UUID, Map<String, Long>> getBasicStat(UUID pollId) {
         var pollAnswerRecords = answerRecordRepository.findAllByPollId(pollId);
 
@@ -57,30 +64,61 @@ public class PollStatService {
         return response;
     }
 
-    public Map<LocalDate, Map<String, Long>> getAnswerStatsByDay(UUID pollId, LocalDate startDate, LocalDate endDate) {
+    @Transactional
+    public GetDailyStat.Response getAnswerStatsByDay(UUID pollId, LocalDate startDate, LocalDate endDate) {
+        var poll = pollRepository.findById(pollId).orElseThrow(() -> new PollNotFoundException(pollId));
+
         List<AnswerStatProjection> statsInInterval = answerRecordRepository.getAnswerStatsByDateRangeGroupedByDays(pollId, startDate.atStartOfDay(), endDate.atStartOfDay().plusDays(1));
         List<StatProjection> statsUpToStartDay = answerRecordRepository.getAnswerStatsUpToInstant(pollId, startDate.atStartOfDay());
 
-        Map<String, Long> cumulativeCounts = statsUpToStartDay.stream()
-                .collect(Collectors.toMap(
-                        StatProjection::getAnswerText,
-                        StatProjection::getAnswerCount
-                ));
+        Map<LocalDate, List<AnswerStatProjection>> dateToStatProjections = statsInInterval.stream()
+                .collect(Collectors.groupingBy(AnswerStatProjection::getDate));
 
-        Map<LocalDate, Map<String, Long>> result = new LinkedHashMap<>();
+        List<GetDailyStat.StatItem> result = new ArrayList<>();
+        Map<UUID, Map<String, Long>> answers = new HashMap<>();
 
-        result.put(startDate, new HashMap<>(cumulativeCounts));
-
-        for (AnswerStatProjection dailyStat : statsInInterval) {
-            cumulativeCounts.merge(
-                    dailyStat.getAnswerText(),
-                    dailyStat.getAnswerCount(),
-                    Long::sum
-            );
-            result.put(dailyStat.getDate(), new HashMap<>(cumulativeCounts));
+        for (var statItem: statsUpToStartDay) {
+            if (!answers.containsKey(statItem.getQuestionId())) {
+                answers.put(statItem.getQuestionId(), new HashMap<>());
+            }
+            answers.get(statItem.getQuestionId()).put(statItem.getAnswerText(), statItem.getAnswerCount());
         }
 
-        return result;
+        poll.getQuestions().forEach(question -> {
+            var answersForQuestion = answers.getOrDefault(question.getId(), new HashMap<>());
+            question.getOptions().forEach(option -> {
+                if (!answersForQuestion.containsKey(option)) {
+                    answersForQuestion.put(option, 0L);
+                }
+            });
+            answers.put(question.getId(), answersForQuestion);
+        });
+
+        LocalDate currentDate = startDate;
+
+        while (!currentDate.isAfter(endDate)) {
+            List<AnswerStatProjection> statsForDay = dateToStatProjections.get(currentDate);
+
+            if (statsForDay != null) {
+                for (var statItem: statsForDay) {
+                    var question = answers.get(statItem.getQuestionId());
+                    var addCount = statItem.getAnswerCount();
+                    question.compute(statItem.getAnswerText(), (k, prevCount) -> prevCount + addCount);
+                }
+            }
+
+            Map<UUID, Map<String, Long>> currentAnswersCopy = answers.entrySet().stream()
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            entry -> new HashMap<>(entry.getValue())
+                    ));
+
+            result.add(new GetDailyStat.StatItem(currentDate, currentAnswersCopy));
+
+            currentDate = currentDate.plusDays(1);
+        }
+
+        return new GetDailyStat.Response(result);
     }
 
 }
