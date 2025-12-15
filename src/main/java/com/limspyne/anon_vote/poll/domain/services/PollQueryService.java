@@ -2,7 +2,7 @@ package com.limspyne.anon_vote.poll.domain.services;
 
 import com.limspyne.anon_vote.poll.domain.entities.Poll;
 import com.limspyne.anon_vote.poll.domain.exceptions.PollNotFoundException;
-import com.limspyne.anon_vote.poll.domain.mappers.PollMapper;
+import com.limspyne.anon_vote.poll.infrastructure.mappers.PollMapper;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollAnswerRecordRepository;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
 import com.limspyne.anon_vote.poll.web.dto.GetPoll;

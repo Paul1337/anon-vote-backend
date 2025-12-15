@@ -1,6 +1,5 @@
-package com.limspyne.anon_vote.poll.domain.mappers;
+package com.limspyne.anon_vote.poll.infrastructure.mappers;
 
-import com.limspyne.anon_vote.poll.infrastructure.repositories.PollAnswerRecordRepository;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
 import com.limspyne.anon_vote.poll.web.dto.GetPoll;
 import com.limspyne.anon_vote.poll.domain.entities.Poll;

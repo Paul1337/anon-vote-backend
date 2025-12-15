@@ -2,7 +2,7 @@ package com.limspyne.anon_vote.poll.web.controllers;
 
 import com.limspyne.anon_vote.poll.domain.services.PollCreationService;
 import com.limspyne.anon_vote.poll.web.dto.*;
-import com.limspyne.anon_vote.poll.domain.mappers.PollMapper;
+import com.limspyne.anon_vote.poll.infrastructure.mappers.PollMapper;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
 import com.limspyne.anon_vote.poll.domain.services.PollQueryService;
 import com.limspyne.anon_vote.poll.domain.services.PollSubmitService;

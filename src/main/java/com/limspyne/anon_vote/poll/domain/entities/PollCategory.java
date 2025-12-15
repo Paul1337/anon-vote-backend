@@ -28,7 +28,7 @@ public class PollCategory {
     @Setter
     private List<PollCategory> childCategories;
 
-    @Column(name = "path")
+    @Column(name = "path", columnDefinition = "TEXT")
     private String path;
 
     public PollCategory(String name, PollCategory parentCategory, List<PollCategory> childCategories) {
@@ -46,5 +46,4 @@ public class PollCategory {
             this.path = parentCategory.getPath() + (id != null ? id + "/" : "/");
         }
     }
-
 }

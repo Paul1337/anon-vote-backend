@@ -26,7 +26,7 @@ public class CategoryMapper {
             path.add("");
         }
 
-        return new GetCategory.ResponseWithPathDto(category.getId().toString(), category.getName(), path.reversed());
+        return new GetCategory.ResponseWithPathDto(category.getId(), category.getName(), path.reversed());
     }
 
     public GetCategory.ResponseDto toDto(PollCategory category, int maxDepth) {
@@ -42,7 +42,7 @@ public class CategoryMapper {
                     .collect(Collectors.toList());
             dto.setChildren(children);
         } else {
-            dto.setChildren(Collections.emptyList());
+            dto.setChildren(new ArrayList<>());
         }
         return dto;
     }

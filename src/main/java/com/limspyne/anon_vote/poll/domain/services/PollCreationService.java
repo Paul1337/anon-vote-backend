@@ -5,7 +5,7 @@ import com.limspyne.anon_vote.poll.domain.entities.PollCategory;
 import com.limspyne.anon_vote.poll.domain.entities.PollTag;
 import com.limspyne.anon_vote.poll.domain.entities.Question;
 import com.limspyne.anon_vote.poll.domain.exceptions.CategoryNotFoundException;
-import com.limspyne.anon_vote.poll.domain.mappers.PollMapper;
+import com.limspyne.anon_vote.poll.infrastructure.mappers.PollMapper;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.CategoryRepository;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
 import com.limspyne.anon_vote.poll.web.dto.CreatePoll;

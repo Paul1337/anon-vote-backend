@@ -36,7 +36,7 @@ public class PollStatService {
     @Autowired
     private PollQueryService pollQueryService;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Map<UUID, Map<String, Long>> getBasicStat(UUID pollId) {
         var pollAnswerRecords = answerRecordRepository.findAllByPollId(pollId);
 
@@ -64,7 +64,7 @@ public class PollStatService {
         return response;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public GetDailyStat.Response getAnswerStatsByDay(UUID pollId, LocalDate startDate, LocalDate endDate) {
         var poll = pollRepository.findById(pollId).orElseThrow(() -> new PollNotFoundException(pollId));
 
@@ -103,6 +103,7 @@ public class PollStatService {
                 for (var statItem: statsForDay) {
                     var question = answers.get(statItem.getQuestionId());
                     var addCount = statItem.getAnswerCount();
+                    question.putIfAbsent(statItem.getAnswerText(), 0L);
                     question.compute(statItem.getAnswerText(), (k, prevCount) -> prevCount + addCount);
                 }
             }
