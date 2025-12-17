@@ -9,6 +9,7 @@ import com.limspyne.anon_vote.poll.infrastructure.mappers.CategoryMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -38,7 +39,7 @@ public class CategoryController {
     @GetMapping({"", "/"})
     @Operation(summary = "Find all root categories with specified depth") // добавить paging?
     public ResponseEntity<List<GetCategory.ResponseDto>> findRootCategories(@RequestParam(name = "depth", defaultValue = "1") @Min(1) @Max(10) int depth) {
-        var categoriesDto =  categoryQueryService.findRootCategoriesWithDepth(depth);
+        var categoriesDto = categoryQueryService.findRootCategoriesWithDepth(depth);
         return ResponseEntity.status(HttpStatus.OK).body(categoriesDto);
     }
 
@@ -50,4 +51,5 @@ public class CategoryController {
         var categoriesDto = categoryQueryService.findChildCategoriesWithDepth(parentCategoryId, depth);
         return ResponseEntity.status(HttpStatus.OK).body(categoriesDto);
     }
+
 }

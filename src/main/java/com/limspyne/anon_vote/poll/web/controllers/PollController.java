@@ -28,9 +28,6 @@ public class PollController {
     private PollRepository pollRepository;
 
     @Autowired
-    private PollMapper pollMapper;
-
-    @Autowired
     private PollQueryService pollQueryService;
 
     @Autowired
@@ -72,11 +69,10 @@ public class PollController {
     @GetMapping("/{id}")
     public ResponseEntity<GetPoll.Response> getPoll(@PathVariable(name = "id") UUID pollId, @AuthenticationPrincipal AppUserDetails userDetails) {
         GetPoll.Response pollResponse;
-        var poll = pollQueryService.getPollById(pollId);
         if (userDetails != null) {
-            pollResponse = pollMapper.toResponseWithUserSpecificData(poll, userDetails);
+            pollResponse = pollQueryService.getPollByIdForAuthedUser(pollId, userDetails);
         } else {
-            pollResponse = pollMapper.toResponseForAnonymousUser(poll);
+            pollResponse = pollQueryService.getPollByIdForAnonymousUser(pollId);
         }
         return ResponseEntity.status(HttpStatus.OK).body(pollResponse);
     }

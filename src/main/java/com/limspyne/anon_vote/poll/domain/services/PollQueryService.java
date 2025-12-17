@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +33,19 @@ public class PollQueryService {
         return pollRepository.findById(pollId).orElseThrow(() -> new PollNotFoundException(pollId));
     }
 
+    @Transactional(readOnly = true)
+    public GetPoll.Response getPollByIdForAnonymousUser(UUID pollId) {
+        var poll = getPollById(pollId);
+        return pollMapper.toResponseForAnonymousUser(poll);
+    }
+
+    @Transactional(readOnly = true)
+    public GetPoll.Response getPollByIdForAuthedUser(UUID pollId, AppUserDetails userDetails) {
+        var poll = getPollById(pollId);
+        return pollMapper.toResponseWithUserSpecificData(poll, userDetails);
+    }
+
+    @Transactional(readOnly = true)
     public PageResponseDto<GetPoll.Response> searchPolls(SearchPolls.Request dto, AppUserDetails userDetails) {
         Page<Poll> pollsPage;
         PageRequest pageRequest = PageRequest.of(dto.getPage(), dto.getSize());
@@ -50,6 +64,7 @@ public class PollQueryService {
         return new PageResponseDto<>(pollsDtos, pollsPage.hasNext());
     }
 
+    @Transactional(readOnly = true)
     public PageResponseDto<GetPoll.Response> findUsersPolls(int page, int size, AppUserDetails userDetails) {
         PageRequest pageRequest = PageRequest.of(page, size);
         var pollsPage = pollRepository.findAllByAuthorId(userDetails.getId(), pageRequest);

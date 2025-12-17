@@ -8,6 +8,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class EmailCodeAuthenticationProvider implements AuthenticationProvider {
@@ -15,6 +16,7 @@ public class EmailCodeAuthenticationProvider implements AuthenticationProvider {
     private UserRepository userRepository;
 
     @Override
+    @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         EmailCodeAuthenticationToken token = (EmailCodeAuthenticationToken) authentication;
         String email = token.getEmail();

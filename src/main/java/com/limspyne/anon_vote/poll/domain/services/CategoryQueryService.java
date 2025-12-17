@@ -5,6 +5,7 @@ import com.limspyne.anon_vote.poll.infrastructure.mappers.CategoryMapper;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.CategoryRepository;
 import com.limspyne.anon_vote.poll.web.dto.GetCategory;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.Get;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,5 +69,6 @@ public class CategoryQueryService {
         }
         return categoryDtoById.values().stream().toList();
     }
+
 
 }
