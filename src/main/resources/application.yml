@@ -8,7 +8,7 @@ spring:
     password: ${DB_PASSWORD}
 
     hikari:
-      pool-name: poll-pool`
+      pool-name: poll-pool
       maximum-pool-size: 10
       connection-timeout: 5000
 

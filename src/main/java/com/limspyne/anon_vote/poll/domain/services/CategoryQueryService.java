@@ -26,15 +26,24 @@ public class CategoryQueryService {
 
     private final CategoryMapper categoryMapper;
 
+    @Transactional(readOnly = true)
     public List<GetCategory.ResponseWithPathDto> searchCategories(String name, Pageable pageable) {
         List<PollCategory> filteredCategories = categoryRepository.findByNameStartsWithIgnoreCaseWithDepth3(name, pageable);
         return filteredCategories.stream().map(item -> categoryMapper.toDtoWithPath(item, 3)).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<GetCategory.ResponseDto> findRootCategoriesWithDepth(int depth) {
-        var categories = categoryRepository.findAllChildrenByRootPathWithMaxDepth("", depth);
-        return categories.stream()
-                .map(category -> categoryMapper.toDto(category, depth - 1))
+        var allCategoriesInSubtree = categoryRepository.findAllChildrenByRootPathWithMaxDepth("", depth);
+        var allCategoriesInSubtreeDto = mergeCategoriesChildren(allCategoriesInSubtree);
+
+        Set<UUID> filteredIds = allCategoriesInSubtree.stream()
+                .filter(category -> category.getParentCategory() == null)
+                .map(PollCategory::getId)
+                .collect(Collectors.toSet());
+
+        return allCategoriesInSubtreeDto.stream()
+                .filter(dto -> filteredIds.contains(dto.getId()))
                 .sorted(Comparator.comparing(GetCategory.ResponseDto::getName))
                 .collect(Collectors.toList());
     }
