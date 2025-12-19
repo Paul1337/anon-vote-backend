@@ -23,6 +23,10 @@ public interface PollRepository extends JpaRepository<Poll, UUID> {
     @EntityGraph(attributePaths = { "tags", "category" })
     Optional<Poll> findById(@Param("id") UUID id);
 
+    @Query("SELECT p FROM Poll p WHERE p.id = :id")
+    @EntityGraph(attributePaths = { "questions" })
+    Optional<Poll> findPollWithQuestionsById(@Param("id") UUID id);
+
     @Query("SELECT p FROM Poll p WHERE p.title ILIKE %:title% AND " +
             "(:categoryId IS NULL or p.category.path LIKE CONCAT( (SELECT cat.path FROM PollCategory cat WHERE cat.id = :categoryId), '%') )")
     Page<Poll> findAllByTitle(@Param("title") String title, @Param("categoryId") UUID categoryId, Pageable pageable);

@@ -54,7 +54,7 @@ public class SendCodeService {
         }
 
         user.addActiveCode(code);
-        Hibernate.initialize(user.getActiveCodes());
+//        Hibernate.initialize(user.getActiveCodes());
         userRepository.save(user);
 
         try {

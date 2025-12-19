@@ -1,5 +1,8 @@
 package com.limspyne.anon_vote.poll.domain.services.stat.export;
 
+import com.limspyne.anon_vote.poll.domain.entities.Question;
+import com.limspyne.anon_vote.poll.domain.exceptions.PollNotFoundException;
+import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.QuestionRepository;
 import com.limspyne.anon_vote.poll.web.dto.GetDailyStat;
 import lombok.RequiredArgsConstructor;
@@ -10,24 +13,33 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PollStatCsvExportService implements ExportDailyStatService<GetDailyStat.Response> {
     private final QuestionRepository questionRepository;
 
+    private final PollRepository pollRepository;
+
     @Override
     @Transactional(readOnly = true)
-    public byte[] exportDailyStat(GetDailyStat.Response response) {
+    public byte[] exportDailyStat(UUID pollId, GetDailyStat.Response response) {
+        var poll = pollRepository.findPollWithQuestionsById(pollId).orElseThrow(() -> new PollNotFoundException(pollId));
+
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
              PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8))) {
 
-            String header = buildHeader(response);
+            String header = buildHeader(poll.getQuestions());
             if (header.isEmpty()) return new byte[] {};
             writer.println(header);
 
             for (var item : response.getData()) {
-                writer.println(buildRow(item));
+                writer.println(buildRow(item, poll.getQuestions()));
             }
 
             writer.flush();
@@ -38,18 +50,14 @@ public class PollStatCsvExportService implements ExportDailyStatService<GetDaily
         }
     }
 
-    private String buildHeader(GetDailyStat.Response response) {
-        var statItems = response.getData();
-        if (statItems.isEmpty()) return "";
-        var answers = statItems.getFirst().getAnswers();
-        var questions = questionRepository.findByIdIn(answers.keySet());
-
+    private String buildHeader(List<Question> questions) {
         StringBuilder header = new StringBuilder("Дата");
         questions.forEach(question -> {
             header.append(",").append(question.getText()).append(",");
-            for (int i = 0; i < question.getOptions().size(); i++) {
-                boolean isLast = i == question.getOptions().size() - 1;
-                header.append(question.getOptions().get(i));
+            var sortedOptions = question.getOptions().stream().sorted().toList();
+            for (int i = 0; i < sortedOptions.size(); i++) {
+                boolean isLast = i == sortedOptions.size() - 1;
+                header.append(sortedOptions.get(i));
                 if (!isLast) {
                     header.append(",");
                 }
@@ -58,14 +66,21 @@ public class PollStatCsvExportService implements ExportDailyStatService<GetDaily
         return header.toString();
     }
 
-    private String buildRow(GetDailyStat.StatItem item) {
-        StringBuilder row = new StringBuilder();
+    private String buildRow(GetDailyStat.StatItem item, List<Question> questions) {
+        StringBuilder row = new StringBuilder(item.getDate().toString());
         var answers = item.getAnswers();
 
-        for (var answerEntry: answers.entrySet()) {
-            answerEntry.getKey();
-        }
+        for (var question: questions) {
+            row.append(",");
+            var answer = answers.get(question.getId());
+            var sortedOptions = question.getOptions().stream().sorted().toList();
 
+            for (int i = 0; i < sortedOptions.size(); i++) {
+                var option = sortedOptions.get(i);
+                row.append(",");
+                row.append(answer.getOrDefault(option, -1L));
+            }
+        }
         return row.toString();
     }
 

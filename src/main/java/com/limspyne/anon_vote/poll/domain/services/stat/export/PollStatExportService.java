@@ -19,6 +19,6 @@ public class PollStatExportService {
         GetDailyStat.Response stats = pollStatService.getAnswerStatsByDay(
                 pollId, startDate, endDate
         );
-        return csvExportService.exportDailyStat(stats);
+        return csvExportService.exportDailyStat(pollId, stats);
     }
 }
