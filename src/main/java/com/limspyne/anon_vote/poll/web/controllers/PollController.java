@@ -2,16 +2,14 @@ package com.limspyne.anon_vote.poll.web.controllers;
 
 import com.limspyne.anon_vote.poll.domain.services.PollCreationService;
 import com.limspyne.anon_vote.poll.web.dto.*;
-import com.limspyne.anon_vote.poll.infrastructure.mappers.PollMapper;
-import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
-import com.limspyne.anon_vote.poll.domain.services.PollQueryService;
+import com.limspyne.anon_vote.poll.domain.services.query.PollQueryService;
 import com.limspyne.anon_vote.poll.domain.services.PollSubmitService;
 import com.limspyne.anon_vote.shared.web.dto.PageResponseDto;
 import com.limspyne.anon_vote.users.instrastructure.security.AppUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,18 +21,13 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/polls")
+@RequiredArgsConstructor
 public class PollController {
-    @Autowired
-    private PollRepository pollRepository;
+    private final PollQueryService pollQueryService;
 
-    @Autowired
-    private PollQueryService pollQueryService;
+    private final PollSubmitService pollSubmitService;
 
-    @Autowired
-    private PollSubmitService pollSubmitService;
-
-    @Autowired
-    private PollCreationService pollCreationService;
+    private final PollCreationService pollCreationService;
 
     @PostMapping({""})
     @PreAuthorize("isAuthenticated()")

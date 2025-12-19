@@ -6,7 +6,9 @@ import com.limspyne.anon_vote.users.instrastructure.security.EmailCodeAuthentica
 import com.limspyne.anon_vote.users.instrastructure.security.JwtTokenProviderService;
 import com.limspyne.anon_vote.users.domain.services.SendCodeService;
 import com.limspyne.anon_vote.users.web.infrastructure.AuthCookieManager;
+import jakarta.security.auth.message.config.AuthConfig;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,18 +19,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
-    @Autowired
-    private SendCodeService sendCodeService;
+    private final SendCodeService sendCodeService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private JwtTokenProviderService jwtTokenProviderService;
+    private final JwtTokenProviderService jwtTokenProviderService;
 
-    @Autowired
-    private AuthCookieManager authCookieManager;
+    private final AuthCookieManager authCookieManager;
 
     @PostMapping("/sendCode")
     public ResponseEntity<Void> sendCode(@RequestBody @Validated SendCode.Request request) {

@@ -1,7 +1,7 @@
-package com.limspyne.anon_vote.poll.domain.services;
+package com.limspyne.anon_vote.poll.domain.services.stat;
 
-import com.limspyne.anon_vote.poll.domain.entities.Poll;
 import com.limspyne.anon_vote.poll.domain.exceptions.PollNotFoundException;
+import com.limspyne.anon_vote.poll.domain.services.query.PollQueryService;
 import com.limspyne.anon_vote.poll.infrastructure.dto.AnswerStatProjection;
 import com.limspyne.anon_vote.poll.infrastructure.dto.StatProjection;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollAnswerRecordRepository;
@@ -11,18 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service

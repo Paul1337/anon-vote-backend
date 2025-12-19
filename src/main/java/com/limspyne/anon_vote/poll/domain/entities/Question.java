@@ -40,9 +40,13 @@ public class Question {
     @Getter
     private List<String> options;
 
-    public Question(String text, List<String> options) {
+    @Column(name = "position", nullable = false)
+    private int position;
+
+    public Question(String text, List<String> options, int position) {
         this.text = text;
         this.options = options;
+        this.position = position;
     }
 
 }

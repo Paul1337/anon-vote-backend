@@ -52,5 +52,6 @@ public class PollSubmitService {
         PollAnswerRecord answerRecord = new PollAnswerRecord(poll, answersEntities);
         poll.addAttemptedUser(user);
         pollAnswerRecordRepository.save(answerRecord);
+        pollRepository.save(poll);
     }
 }

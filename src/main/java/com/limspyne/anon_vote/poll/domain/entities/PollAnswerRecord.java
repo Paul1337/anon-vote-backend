@@ -41,4 +41,9 @@ public class PollAnswerRecord {
 
         this.answers.forEach(answer -> answer.setAnswerRecord(this));
     }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }

@@ -3,6 +3,7 @@ package com.limspyne.anon_vote.poll.domain.entities;
 import com.limspyne.anon_vote.users.domain.entities.User;
 import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.xml.bind.annotation.XmlSchemaTypes;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -30,15 +32,16 @@ public class Poll {
 
     @CreatedDate
     @Column(name = "created_at")
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true)
     @Setter
     @BatchSize(size = 20)
+    @OrderBy("position ASC")
     private List<Question> questions;
 
     @ManyToOne()
@@ -85,5 +88,18 @@ public class Poll {
     public void addAttemptedUser(User user) {
         attemptedUsers.add(user);
     }
+
+    @PrePersist
+    protected void onCreate() {
+        var now = LocalDateTime.now();
+        createdAt = now;
+        updatedAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
 
 }

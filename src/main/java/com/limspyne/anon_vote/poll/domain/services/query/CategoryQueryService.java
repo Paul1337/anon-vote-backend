@@ -1,22 +1,19 @@
-package com.limspyne.anon_vote.poll.domain.services;
+package com.limspyne.anon_vote.poll.domain.services.query;
 
 import com.limspyne.anon_vote.poll.domain.entities.PollCategory;
 import com.limspyne.anon_vote.poll.infrastructure.mappers.CategoryMapper;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.CategoryRepository;
 import com.limspyne.anon_vote.poll.web.dto.GetCategory;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.Get;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service

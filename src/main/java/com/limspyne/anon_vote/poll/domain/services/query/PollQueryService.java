@@ -1,4 +1,4 @@
-package com.limspyne.anon_vote.poll.domain.services;
+package com.limspyne.anon_vote.poll.domain.services.query;
 
 import com.limspyne.anon_vote.poll.domain.entities.Poll;
 import com.limspyne.anon_vote.poll.domain.exceptions.PollNotFoundException;

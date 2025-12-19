@@ -1,27 +1,18 @@
 package com.limspyne.anon_vote.poll.web.controllers;
 
-import com.limspyne.anon_vote.poll.domain.services.CategoryQueryService;
+import com.limspyne.anon_vote.poll.domain.services.query.CategoryQueryService;
 import com.limspyne.anon_vote.poll.web.dto.GetCategory;
-import com.limspyne.anon_vote.poll.domain.entities.PollCategory;
-import com.limspyne.anon_vote.poll.domain.exceptions.CategoryNotFoundException;
-import com.limspyne.anon_vote.poll.infrastructure.repositories.CategoryRepository;
-import com.limspyne.anon_vote.poll.infrastructure.mappers.CategoryMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("categories")

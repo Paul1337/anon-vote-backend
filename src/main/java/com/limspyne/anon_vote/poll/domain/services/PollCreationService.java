@@ -59,13 +59,10 @@ public class PollCreationService {
         Set<PollTag> tags = pollTagProviderService.provideTagsOfNames(dto.tags());
         poll.setTags(tags);
 
-        List<Question> questions = dto.questions().stream().map(qstDto -> {
-            var question = new Question(qstDto.getText(), qstDto.getOptions());
+        dto.questions().forEach(qstDto -> {
+            var question = new Question(qstDto.getText(), qstDto.getOptions(), poll.getQuestions().size());
             poll.addQuestion(question);
-            return question;
-        }).toList();
-
-        poll.setQuestions(questions);
+        });
 
         pollRepository.save(poll);
 
