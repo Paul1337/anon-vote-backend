@@ -1,6 +1,7 @@
 package com.limspyne.anon_vote.users.domain.services;
 
 import com.limspyne.anon_vote.shared.domain.services.TelegramPreHandler;
+import com.limspyne.anon_vote.shared.inftrastrucure.telegram.TelegramKeyboards;
 import com.limspyne.anon_vote.users.domain.exceptions.CodeSendLimitException;
 import com.limspyne.anon_vote.users.dto.SendCode;
 import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
@@ -8,7 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,9 +93,16 @@ public class AuthPreHandler extends TelegramPreHandler {
         var user = userService.getUserByTelegramId(chatId);
         boolean confirmationSuccess = user.tryConfirmCodeValue(code);
         if (confirmationSuccess) {
-            sendMessage(sender, chatId, "🎉 Поздравляю, вы успешно зарегистрированы!");
             user.setConfirmedTelegram(true);
             userRepository.save(user);
+
+            SendMessage message = SendMessage.builder()
+                    .chatId(chatId.toString())
+                    .text("🎉 Поздравляю, вы успешно зарегистрированы!")
+                    .replyMarkup(TelegramKeyboards.mainMenu())
+                    .build();
+
+            sendMessage(sender, message);
         } else {
             try {
                 sendCodeService.sendCode(new SendCode.Request(user.getEmail()));

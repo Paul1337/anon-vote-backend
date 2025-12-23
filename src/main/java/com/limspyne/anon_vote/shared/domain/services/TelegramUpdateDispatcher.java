@@ -9,7 +9,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class TelegramUpdateDispatcher implements TelegramUpdateHandler {
+public class TelegramUpdateDispatcher extends TelegramUpdateHandler {
     private final List<TelegramUpdateHandler> handlers;
 
     private final List<TelegramPreHandler> preHandlers;
@@ -30,8 +30,14 @@ public class TelegramUpdateDispatcher implements TelegramUpdateHandler {
         for (TelegramUpdateHandler handler : handlers) {
             if (handler.canHandle(update)) {
                 handler.handle(update, sender);
-                break;
+                return;
             }
         }
+
+        fallback(update, sender);
+    }
+
+    private void fallback(Update update, DefaultAbsSender sender) {
+        sendMessage(sender, update.getMessage().getChatId(), "Неизвестная команда, попробуйте из списка доступных");
     }
 }
