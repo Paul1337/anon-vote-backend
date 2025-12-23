@@ -46,6 +46,8 @@ public class AppMailSender implements TextMailSender, HtmlMailSender {
         };
     }
 
+    @Override
+    @Async
     public void sendSimpleTextMail(SimpleTextMail dto) throws MessagingException {
         Session session = Session.getInstance(properties, mailAuthenticator);
 

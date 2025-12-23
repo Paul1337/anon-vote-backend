@@ -31,8 +31,23 @@ public class User {
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     private List<Poll> createdPolls = new ArrayList<>();
 
+    @Column(name = "telegram_id")
+    @Getter
+    @Setter
+    private Long telegramId;
+
+    @Column(name = "confirmed_telegram")
+    @Getter
+    @Setter
+    boolean confirmedTelegram;
+
     public User(String email) {
         this.email = email;
+    }
+
+    public User(String email, long telegramId) {
+        this.email = email;
+        this.telegramId = telegramId;
     }
 
     public void addActiveCode(UserActiveCode code) {
@@ -47,5 +62,9 @@ public class User {
             boolean codeIsNotExpired = Duration.between(activeCode.getCreatedAt(), LocalDateTime.now()).compareTo(UserActiveCode.CODE_DURATION) < 0;
             return codeValueIsRight && codeIsNotExpired;
         });
+    }
+
+    public boolean isTelegramConnected() {
+        return telegramId != null;
     }
 }

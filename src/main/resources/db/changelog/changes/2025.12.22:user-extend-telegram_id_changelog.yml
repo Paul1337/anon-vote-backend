@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: user-extend-telegram-id
+      author: paul
+      changes:
+        - sql: |
+            ALTER TABLE users ALTER COLUMN telegram_id TYPE BIGINT;

@@ -2,6 +2,7 @@ package com.limspyne.anon_vote.users.domain.services;
 
 import com.limspyne.anon_vote.shared.inftrastrucure.email.dto.HtmlMail;
 import com.limspyne.anon_vote.shared.domain.services.HtmlMailSender;
+import com.limspyne.anon_vote.shared.inftrastrucure.util.TemplateLoader;
 import com.limspyne.anon_vote.users.domain.exceptions.CodeSendLimitException;
 import com.limspyne.anon_vote.users.domain.exceptions.CouldNotSendCodeException;
 import com.limspyne.anon_vote.users.dto.SendCode;
@@ -9,22 +10,15 @@ import com.limspyne.anon_vote.users.domain.entities.User;
 import com.limspyne.anon_vote.users.domain.entities.UserActiveCode;
 import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
 import jakarta.mail.MessagingException;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class SendCodeService {
@@ -43,7 +37,7 @@ public class SendCodeService {
     @Transactional
     public void sendCode(SendCode.Request request) {
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
-        var user = userOptional.orElseGet(() -> userService.createUserByEmail(request.getEmail()));
+        var user = userOptional.orElseGet(() -> userService.createUser(request.getEmail()));
         var code = new UserActiveCode(generateCode());
 
         UserActiveCode lastActiveCode = user.getActiveCodes().stream().max(Comparator.comparing(UserActiveCode::getCreatedAt))
@@ -54,13 +48,12 @@ public class SendCodeService {
         }
 
         user.addActiveCode(code);
-//        Hibernate.initialize(user.getActiveCodes());
         userRepository.save(user);
 
         try {
             String description = "Мы не привязываем вашу почту к вашим ответам, храним анонимность. Почта нужна только для: <p style='font-weight: 600; color: black;'>- гарантии уникальных ответов</p> <p style='font-weight: 600; color: black;'>- авторства созданных опросов (чтобы вы могли посмотреть список своих опросов)</p>";
 
-            String htmlContent = loadTemplate(CONFIRM_EMAIL_TEMPLATE, description, code.getValue());
+            String htmlContent = TemplateLoader.loadTemplate(CONFIRM_EMAIL_TEMPLATE, description, code.getValue());
             String textContent = String.format(
                     "Подтверждение почты для anon-vote\n\n%s\n\nВаш код подтверждения: %s\n\nВведите этот код в приложении.",
                     description,
@@ -71,18 +64,6 @@ public class SendCodeService {
             throw new CouldNotSendCodeException(request.getEmail());
         } catch (IOException exp) {
             throw new RuntimeException("Could not find email template");
-        }
-    }
-
-    private static String loadTemplate(String path, String... placeholders) throws IOException {
-        try (InputStream inputStream = SendCodeService.class.getClassLoader().getResourceAsStream(path)) {
-            if (inputStream == null) {
-                throw new IOException("Шаблон не найден: " + path);
-            }
-            String template = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
-                    .lines()
-                    .collect(Collectors.joining("\n"));
-            return String.format(template, placeholders);
         }
     }
 

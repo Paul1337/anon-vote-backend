@@ -51,6 +51,12 @@ springdoc:
 #    org.modelmapper: DEBUG
 #    org.hibernate.SQL: DEBUG
 
+telegram:
+  bot:
+    username: ${TELEGRAM_BOT_USERNAME}
+    token: ${TELEGRAM_BOT_TOKEN}
+
+
 jwt:
   secret: ${JWT_SECRET}
   expiration: ${JWT_EXPIRATION}

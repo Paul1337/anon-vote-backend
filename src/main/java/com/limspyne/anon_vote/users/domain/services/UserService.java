@@ -16,13 +16,23 @@ public class UserService {
     private UserRepository userRepository;
 
     public User getUserById(UUID id) {
-        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        return user;
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
-    public User createUserByEmail(String email) {
+    public User getUserByTelegramId(Long telegramId) {
+        return userRepository.findByTelegramId(telegramId).orElseThrow(UserNotFoundException::new);
+    }
+
+    public User createUser(String email) {
         if (userRepository.existsByEmail(email)) throw new UserExistsException();
         var newUser = new User(email);
+        userRepository.save(newUser);
+        return newUser;
+    }
+
+    public User createUser(String email, long telegramId) {
+        if (userRepository.existsByEmail(email)) throw new UserExistsException();
+        var newUser = new User(email, telegramId);
         userRepository.save(newUser);
         return newUser;
     }

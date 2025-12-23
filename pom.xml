@@ -17,7 +17,7 @@
 	<artifactId>anon-vote</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>anon-vote</name>
-	<description>App for anonymous quizes</description>
+	<description>App for creating and submitting anonymous polls</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -136,6 +136,11 @@
 			<groupId>org.eclipse.angus</groupId>
 			<artifactId>angus-mail</artifactId>
 			<version>2.0.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.telegram</groupId>
+			<artifactId>telegrambots-spring-boot-starter</artifactId>
+			<version>6.9.7.1</version>
 		</dependency>
 	</dependencies>
 

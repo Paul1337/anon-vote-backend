@@ -19,6 +19,9 @@ public class AsyncConfig {
         executor.setQueueCapacity(25);
         executor.setThreadNamePrefix("AsyncThread-");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setAwaitTerminationSeconds(20);
+        executor.setAllowCoreThreadTimeOut(true);
         executor.initialize();
         return executor;
     }

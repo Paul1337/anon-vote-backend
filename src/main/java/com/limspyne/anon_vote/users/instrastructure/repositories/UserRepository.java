@@ -10,4 +10,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findByEmail(String email);
 
     boolean existsByEmail(String email);
+
+    boolean existsByTelegramId(long telegramId);
+
+    Optional<User> findByTelegramId(long telegramId);
 }
