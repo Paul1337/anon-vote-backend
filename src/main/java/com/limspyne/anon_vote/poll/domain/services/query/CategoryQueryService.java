@@ -1,9 +1,10 @@
 package com.limspyne.anon_vote.poll.domain.services.query;
 
 import com.limspyne.anon_vote.poll.domain.entities.PollCategory;
+import com.limspyne.anon_vote.poll.domain.exceptions.CategoryNotFoundException;
 import com.limspyne.anon_vote.poll.infrastructure.mappers.CategoryMapper;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.CategoryRepository;
-import com.limspyne.anon_vote.poll.web.dto.GetCategory;
+import com.limspyne.anon_vote.poll.presentation.dto.GetCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,8 @@ public class CategoryQueryService {
 
     @Transactional(readOnly = true)
     public List<GetCategory.ResponseDto> findChildCategoriesWithDepth(String parentCategoryId, int depth) {
-        var allCategoriesInSubtree = categoryRepository.findAllChildrenByRootPathWithMaxDepth("/%s/".formatted(parentCategoryId), depth);
+        var parentCategory = categoryRepository.findById(UUID.fromString(parentCategoryId)).orElseThrow(CategoryNotFoundException::new);
+        var allCategoriesInSubtree = categoryRepository.findAllChildrenByRootPathWithMaxDepth(parentCategory.getPath(), depth);
         var allCategoriesInSubtreeDto = mergeCategoriesChildren(allCategoriesInSubtree);
         var parentCategoryUUID = UUID.fromString(parentCategoryId);
 

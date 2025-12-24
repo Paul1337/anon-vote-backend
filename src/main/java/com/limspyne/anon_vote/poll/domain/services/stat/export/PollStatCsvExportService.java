@@ -4,7 +4,7 @@ import com.limspyne.anon_vote.poll.domain.entities.Question;
 import com.limspyne.anon_vote.poll.domain.exceptions.PollNotFoundException;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.QuestionRepository;
-import com.limspyne.anon_vote.poll.web.dto.GetDailyStat;
+import com.limspyne.anon_vote.poll.presentation.dto.GetDailyStat;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.stereotype.Service;
@@ -13,11 +13,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

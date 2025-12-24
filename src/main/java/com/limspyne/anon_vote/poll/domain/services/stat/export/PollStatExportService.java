@@ -1,7 +1,7 @@
 package com.limspyne.anon_vote.poll.domain.services.stat.export;
 
 import com.limspyne.anon_vote.poll.domain.services.stat.PollStatService;
-import com.limspyne.anon_vote.poll.web.dto.GetDailyStat;
+import com.limspyne.anon_vote.poll.presentation.dto.GetDailyStat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

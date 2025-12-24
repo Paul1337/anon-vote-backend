@@ -1,6 +1,6 @@
 package com.limspyne.anon_vote.poll.infrastructure.config;
 
-import com.limspyne.anon_vote.poll.web.dto.GetCategory;
+import com.limspyne.anon_vote.poll.presentation.dto.GetCategory;
 import com.limspyne.anon_vote.poll.domain.entities.PollCategory;
 import com.limspyne.anon_vote.poll.domain.entities.PollTag;
 import org.modelmapper.ModelMapper;

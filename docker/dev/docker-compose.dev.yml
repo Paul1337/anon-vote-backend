@@ -24,6 +24,10 @@ services:
   cache:
     image: redis:8.2.0
     restart: unless-stopped
+    environment:
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     volumes:
       - redis_data:/data
     ports:
@@ -64,6 +68,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
       WATCH_EXEC_DOWNLOAD: ${WATCH_EXEC_DOWNLOAD}
       SPRING_PROFILES_ACTIVE: dev
       JAVA_OPTS: ${JAVA_OPTS}

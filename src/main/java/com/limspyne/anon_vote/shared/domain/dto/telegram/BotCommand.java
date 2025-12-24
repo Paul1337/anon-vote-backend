@@ -28,13 +28,10 @@ public enum BotCommand {
         this(command, buttonText, List.of());
     }
 
-    public static BotCommand fromText(String text) {
-        return List.of(values()).stream()
-                .filter(cmd ->
-                        cmd.triggers.stream().anyMatch(trigger -> trigger.equalsIgnoreCase(text)) ||
-                        cmd.buttonText.equalsIgnoreCase(text) || cmd.command.equalsIgnoreCase(text)
-                )
-                .findFirst()
-                .orElse(null);
+    public boolean matches(String text) {
+        if (command.equalsIgnoreCase(text)) return true;
+        if (buttonText.equalsIgnoreCase(text)) return true;
+        return triggers.stream().anyMatch(trigger -> trigger.equalsIgnoreCase(text));
     }
+
 }

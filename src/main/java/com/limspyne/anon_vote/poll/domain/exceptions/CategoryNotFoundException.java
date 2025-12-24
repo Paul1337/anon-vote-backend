@@ -8,4 +8,8 @@ public class CategoryNotFoundException extends AppBasicException {
     public CategoryNotFoundException(UUID categoryId) {
         super("Category with id %s not found!".formatted(categoryId.toString()));
     }
+
+    public CategoryNotFoundException() {
+        super("Category not found!");
+    }
 }

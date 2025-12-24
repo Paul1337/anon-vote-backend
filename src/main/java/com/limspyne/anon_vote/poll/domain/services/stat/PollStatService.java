@@ -6,7 +6,7 @@ import com.limspyne.anon_vote.poll.infrastructure.dto.AnswerStatProjection;
 import com.limspyne.anon_vote.poll.infrastructure.dto.StatProjection;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollAnswerRecordRepository;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
-import com.limspyne.anon_vote.poll.web.dto.GetDailyStat;
+import com.limspyne.anon_vote.poll.presentation.dto.GetDailyStat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
