@@ -1,24 +1,35 @@
 package com.limspyne.anon_vote.shared.inftrastrucure.telegram;
 
-import com.limspyne.anon_vote.shared.domain.services.TelegramMessageSender;
+import com.limspyne.anon_vote.shared.presenter.telegram.InlineKeyboardMapper;
+import com.limspyne.anon_vote.shared.presenter.telegram.dto.TelegramDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-@Component
-@RequiredArgsConstructor
-public class TelegramSender implements TelegramMessageSender {
-    private final AppTelegramBot bot;
+public class TelegramSender {
+    private final DefaultAbsSender sender;
 
-    @Override
-    public void sendMessage(Long chatId, String text) throws TelegramApiException {
-        SendMessage message = SendMessage.builder()
-                .chatId(chatId.toString())
-                .text(text)
-                .build();
+    public TelegramSender(DefaultAbsSender sender) {
+        this.sender = sender;
+    }
 
-        bot.execute(message);
+    public void send(TelegramDto.Response response) {
+        try {
+            InlineKeyboardMarkup keyboard =
+                    InlineKeyboardMapper.from(response.getInlineButtons());
+
+            SendMessage message = SendMessage.builder()
+                    .chatId(response.getTelegramId().toString())
+                    .text(response.getText())
+                    .replyMarkup(response.isShowMenu() ? TelegramKeyboards.mainMenu() : keyboard)
+                    .build();
+
+            sender.execute(message);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
-

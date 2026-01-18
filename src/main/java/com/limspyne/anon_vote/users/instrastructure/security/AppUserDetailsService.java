@@ -1,6 +1,6 @@
 package com.limspyne.anon_vote.users.instrastructure.security;
 
-import com.limspyne.anon_vote.users.domain.exceptions.UserNotFoundException;
+import com.limspyne.anon_vote.users.application.exceptions.UserNotFoundException;
 import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.limspyne.anon_vote.shared.inftrastrucure.telegram;
 
-import com.limspyne.anon_vote.shared.domain.dto.telegram.BotCommand;
+import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;

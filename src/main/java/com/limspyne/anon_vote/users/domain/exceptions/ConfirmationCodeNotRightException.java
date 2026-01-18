@@ -1,9 +1,0 @@
-package com.limspyne.anon_vote.users.domain.exceptions;
-
-import com.limspyne.anon_vote.shared.domain.exceptions.AppBasicException;
-
-public class ConfirmationCodeNotRightException extends AppBasicException {
-    public ConfirmationCodeNotRightException() {
-        super("Confirmation code not right");
-    }
-}

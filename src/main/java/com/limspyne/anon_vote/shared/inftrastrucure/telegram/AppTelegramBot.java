@@ -1,6 +1,7 @@
 package com.limspyne.anon_vote.shared.inftrastrucure.telegram;
-import com.limspyne.anon_vote.shared.domain.dto.telegram.BotCommand;
-import com.limspyne.anon_vote.shared.domain.services.TelegramUpdateDispatcher;
+import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommand;
+import com.limspyne.anon_vote.shared.application.telegram.services.TelegramInteractionService;
+import com.limspyne.anon_vote.shared.presenter.telegram.dto.TelegramDto;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
@@ -22,22 +23,28 @@ public class AppTelegramBot extends TelegramLongPollingBot {
 
     private final String botToken;
 
-    private final TelegramUpdateDispatcher telegramUpdateDispatcher;
+    private final TelegramInteractionService interactionService;
+
+    private final TelegramSender telegramSender;
 
     private static final Logger logger = LoggerFactory.getLogger(AppTelegramBot.class);
 
     public AppTelegramBot(@Value("${telegram.bot.username}") String botUsername,
                           @Value("${telegram.bot.token}") String botToken,
-                          TelegramUpdateDispatcher telegramUpdateDispatcher) {
+                          TelegramInteractionService interactionService) {
         super(botToken);
         this.botToken = botToken;
         this.botUsername = botUsername;
-        this.telegramUpdateDispatcher = telegramUpdateDispatcher;
+        this.interactionService = interactionService;
+        this.telegramSender = new TelegramSender(this);
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        telegramUpdateDispatcher.handle(update, this);
+        var request = TelegramDto.Request.from(update);
+        if (request == null) return;
+        TelegramDto.Response response = interactionService.handle(request);
+        telegramSender.send(response);
     }
 
     @Override
@@ -46,14 +53,26 @@ public class AppTelegramBot extends TelegramLongPollingBot {
     }
 
     @PostConstruct
-    public void init() {
+    void init() {
         registerCommands();
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        this.onClosing();
     }
 
     private void registerCommands() {
         try {
+             List<BotCommand> globalCommands = List.of(
+                    BotCommand.SEARCH_POLLS,
+                    BotCommand.MY_POLLS,
+                    BotCommand.CREATE_POLL
+             );
+
             List<org.telegram.telegrambots.meta.api.objects.commands.BotCommand> commands =
-                    Arrays.stream(BotCommand.values())
+                    globalCommands
+                            .stream()
                             .map(cmd -> new org.telegram.telegrambots.meta.api.objects.commands.BotCommand(
                                     cmd.getCommand(),
                                     cmd.getButtonText()

@@ -20,15 +20,16 @@ spring:
       format_sql: true
       ddl-auto: validate
 
-  redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
-    password: ${REDIS_PASSWORD}
-    lettuce:
-      pool:
-        max-active: 8
-        max-idle: 8
-        min-idle: 2
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
 
   liquibase:
     enabled: true
@@ -52,8 +53,10 @@ springdoc:
   swagger-ui:
     path: '/swagger-ui'
 
-#logging:
-#  level:
+logging:
+  level:
+    org.springframework.data.redis: DEBUG
+    io.lettuce.core: DEBUG
 #    org.modelmapper: DEBUG
 #    org.hibernate.SQL: DEBUG
 

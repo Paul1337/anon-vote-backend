@@ -1,8 +1,8 @@
 package com.limspyne.anon_vote.poll.infrastructure.config;
 
-import com.limspyne.anon_vote.poll.presentation.dto.GetCategory;
-import com.limspyne.anon_vote.poll.domain.entities.PollCategory;
-import com.limspyne.anon_vote.poll.domain.entities.PollTag;
+import com.limspyne.anon_vote.poll.presenter.dto.GetCategory;
+import com.limspyne.anon_vote.poll.application.entities.PollCategory;
+import com.limspyne.anon_vote.poll.application.entities.PollTag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

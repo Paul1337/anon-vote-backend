@@ -1,6 +1,6 @@
 package com.limspyne.anon_vote.shared.inftrastrucure.repositories;
 
-import com.limspyne.anon_vote.shared.domain.dto.telegram.UserTelegramSession;
+import com.limspyne.anon_vote.shared.application.telegram.dto.UserTelegramSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;

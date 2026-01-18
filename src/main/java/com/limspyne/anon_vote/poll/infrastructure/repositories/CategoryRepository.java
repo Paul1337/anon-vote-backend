@@ -1,6 +1,6 @@
 package com.limspyne.anon_vote.poll.infrastructure.repositories;
 
-import com.limspyne.anon_vote.poll.domain.entities.PollCategory;
+import com.limspyne.anon_vote.poll.application.entities.PollCategory;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;

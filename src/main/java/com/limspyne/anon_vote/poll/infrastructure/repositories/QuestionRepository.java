@@ -1,6 +1,6 @@
 package com.limspyne.anon_vote.poll.infrastructure.repositories;
 
-import com.limspyne.anon_vote.poll.domain.entities.Question;
+import com.limspyne.anon_vote.poll.application.entities.Question;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

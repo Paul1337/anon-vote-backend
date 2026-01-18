@@ -1,8 +1,8 @@
 package com.limspyne.anon_vote.poll.infrastructure.mappers;
 
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
-import com.limspyne.anon_vote.poll.presentation.dto.GetPoll;
-import com.limspyne.anon_vote.poll.domain.entities.Poll;
+import com.limspyne.anon_vote.poll.presenter.dto.GetPoll;
+import com.limspyne.anon_vote.poll.application.entities.Poll;
 import com.limspyne.anon_vote.users.instrastructure.security.AppUserDetails;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

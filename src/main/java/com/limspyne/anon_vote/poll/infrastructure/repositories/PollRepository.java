@@ -1,6 +1,5 @@
 package com.limspyne.anon_vote.poll.infrastructure.repositories;
-import com.limspyne.anon_vote.poll.domain.entities.Poll;
-import com.limspyne.anon_vote.users.domain.entities.User;
+import com.limspyne.anon_vote.poll.application.entities.Poll;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
