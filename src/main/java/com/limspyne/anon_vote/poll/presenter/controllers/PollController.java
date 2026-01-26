@@ -5,7 +5,9 @@ import com.limspyne.anon_vote.poll.presenter.dto.*;
 import com.limspyne.anon_vote.poll.application.services.query.PollQueryService;
 import com.limspyne.anon_vote.poll.application.services.PollSubmitService;
 import com.limspyne.anon_vote.shared.presenter.dto.PageResponseDto;
+import com.limspyne.anon_vote.users.application.entities.User;
 import com.limspyne.anon_vote.users.instrastructure.security.AppUserDetails;
+import com.limspyne.anon_vote.users.instrastructure.security.SecurityContextService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
@@ -28,6 +30,8 @@ public class PollController {
     private final PollSubmitService pollSubmitService;
 
     private final PollCreationService pollCreationService;
+
+    private final SecurityContextService securityContextService;
 
     @PostMapping({""})
     @PreAuthorize("isAuthenticated()")
@@ -55,7 +59,8 @@ public class PollController {
     )
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> submitPoll(@RequestBody SubmitPoll.Request request, @PathVariable(name = "id") UUID pollId) {
-        pollSubmitService.submitPoll(pollId, request.getAnswers());
+        User user = securityContextService.getCurrentUser();
+        pollSubmitService.submitPoll(user, pollId, request.getAnswers());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

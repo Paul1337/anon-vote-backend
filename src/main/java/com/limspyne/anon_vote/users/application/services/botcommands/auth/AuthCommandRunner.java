@@ -1,11 +1,12 @@
-package com.limspyne.anon_vote.users.application.services;
+package com.limspyne.anon_vote.users.application.services.botcommands.auth;
 
 import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommand;
-import com.limspyne.anon_vote.shared.application.telegram.dto.UserTelegramSession;
+import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommandContext;
 import com.limspyne.anon_vote.shared.application.telegram.services.CommandRunner;
-import com.limspyne.anon_vote.shared.inftrastrucure.repositories.UserTelegramSessionRepository;
 import com.limspyne.anon_vote.shared.presenter.telegram.dto.TelegramDto;
 import com.limspyne.anon_vote.users.application.exceptions.CodeSendLimitException;
+import com.limspyne.anon_vote.users.application.services.SendCodeService;
+import com.limspyne.anon_vote.users.application.services.UserService;
 import com.limspyne.anon_vote.users.dto.SendCode;
 import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,6 @@ public class AuthCommandRunner extends CommandRunner {
 
     private final UserRepository userRepository;
 
-    private final UserTelegramSessionRepository userTelegramSessionRepository;
-
     private String newCodeButtonText = "Отправить новый код";
     private String changeMailButtonText = "Изменить почту";
 
@@ -35,25 +34,16 @@ public class AuthCommandRunner extends CommandRunner {
 
     @Override
     @Transactional(noRollbackFor = { CodeSendLimitException.class })
-    public TelegramDto.Response handleCommand(TelegramDto.Request request, UserTelegramSession session) {
-        if (session.getContext() == null) session.setContext(new AuthCommandContext());
-        if (!(session.getContext() instanceof AuthCommandContext authCommandContext)) throw new RuntimeException("context expected to be of type AuthCommandContext");
+    public TelegramDto.Response handleCommand(TelegramDto.Request request, BotCommandContext context) {
+        if (!(context instanceof AuthCommandContext authCommandContext)) throw new RuntimeException("context expected to be of type AuthCommandContext");
 
         Long telegramId = request.getTelegramId();
 
-        TelegramDto.Response response = switch (authCommandContext.getState()) {
+        return switch (authCommandContext.getState()) {
             case NONE -> handleStart(authCommandContext, telegramId);
             case WAIT_EMAIL -> handleEmail(authCommandContext, telegramId, request.getText());
             case WAIT_CODE -> handleCode(authCommandContext, telegramId, request);
         };
-
-        if (authCommandContext.getState() == null) {
-            userTelegramSessionRepository.clear(telegramId);
-        } else {
-            userTelegramSessionRepository.save(session);
-        }
-
-        return response;
     }
 
     private TelegramDto.Response handleStart(AuthCommandContext authCommandContext, Long chatId) {
@@ -68,12 +58,19 @@ public class AuthCommandRunner extends CommandRunner {
 
         var userOptional = userRepository.findByEmail(email);
         String responseText = "";
+
         if (userOptional.isPresent()) {
             var user = userOptional.get();
-            user.setTelegramId(chatId);
+            if (user.getTelegramId() == null) {
+                userService.deleteByTelegramId(chatId);
+                userRepository.flush();
+                user.setTelegramId(chatId);
+            }
             userRepository.save(user);
             responseText = "Отлично, вижу вы уже регистрировались в нашем сервисе. Введите, пожалуйста, код подтверждения, отправленный на эту почту";
         } else {
+            userService.deleteByTelegramId(chatId);
+            userRepository.flush();
             userService.createUser(email, chatId);
             responseText = "Введите, пожалуйста, код подтверждения, отправленный на эту почту";
         }
@@ -85,14 +82,11 @@ public class AuthCommandRunner extends CommandRunner {
         }
 
         authCommandContext.setState(AuthCommandContext.RegistrationState.WAIT_CODE);
-
         return TelegramDto.Response.forChat(chatId).text(responseText).build();
     }
 
     private TelegramDto.Response handleCode(AuthCommandContext authCommandContext, Long chatId, TelegramDto.Request request) {
         var user = userService.getUserByTelegramId(chatId);
-
-
 
         if (request.getText().equalsIgnoreCase(newCodeButtonText)) {
             try {
@@ -112,7 +106,7 @@ public class AuthCommandRunner extends CommandRunner {
         if (confirmationSuccess) {
             user.setConfirmedTelegram(true);
             userRepository.save(user);
-            authCommandContext.setState(null);
+            authCommandContext.setFinished(true);
             return TelegramDto.Response.forChat(chatId).text("🎉 Поздравляю, вы успешно зарегистрированы!").withMenu().build();
         } else {
             return TelegramDto.Response.forChat(chatId).text("❌ Код неверный или истёк").inlineButtons(actionButtonTexts).build();

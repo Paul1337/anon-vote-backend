@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: user-add-email-unique-constraint
+      author: paul
+      changes:
+        - sql: |
+            ALTER TABLE user_active_code
+            DROP CONSTRAINT fk_user_active_code_user_id;
+        - sql: |
+            ALTER TABLE user_active_code
+            ADD CONSTRAINT fk_user_active_code_user_id 
+            FOREIGN KEY (user_id)
+            REFERENCES users(id)
+            ON DELETE CASCADE;
+

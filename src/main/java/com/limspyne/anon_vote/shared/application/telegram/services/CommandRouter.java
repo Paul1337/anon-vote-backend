@@ -2,6 +2,7 @@ package com.limspyne.anon_vote.shared.application.telegram.services;
 
 import com.limspyne.anon_vote.shared.application.exceptions.telegram.CommandRunnerNotFound;
 import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommand;
+import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommandData;
 import com.limspyne.anon_vote.shared.application.telegram.dto.UserTelegramSession;
 import com.limspyne.anon_vote.shared.inftrastrucure.repositories.UserTelegramSessionRepository;
 import com.limspyne.anon_vote.shared.presenter.telegram.dto.TelegramDto;
@@ -21,16 +22,29 @@ public class CommandRouter {
         return runCommand(request, session);
     }
 
-    public TelegramDto.Response startNewCommand(TelegramDto.Request request, BotCommand botCommand) {
-        var newSession = UserTelegramSession.emptyForCommand(request.getTelegramId(), botCommand);
-        telegramSessionRepository.save(newSession);
+    public TelegramDto.Response startNewCommand(TelegramDto.Request request, BotCommandData data, UserTelegramSession session) {
+        session.addCommand(data);
+        telegramSessionRepository.save(session);
+        return runCommand(request, session);
+    }
 
-        return runCommand(request, newSession);
+    public TelegramDto.Response startNewCommand(TelegramDto.Request request, BotCommand botCommand, UserTelegramSession session) {
+        session.addCommand(BotCommandData.forCommand(botCommand));
+        telegramSessionRepository.save(session);
+        return runCommand(request, session);
     }
 
     private TelegramDto.Response runCommand(TelegramDto.Request request, UserTelegramSession session) {
-        CommandRunner runner = findRunner(session.getActiveCommand());
-        return runner.handleCommand(request, session);
+        var activeCommandData = session.getActiveCommandData();
+        CommandRunner runner = findRunner(activeCommandData.getBotCommand());
+        var response = runner.handleCommand(request, activeCommandData.getContext());
+        if (activeCommandData.getContext().isFinished()) {
+            session.finishActiveCommand();
+            response.setCommandFinished(true);
+        }
+
+        telegramSessionRepository.save(session);
+        return response;
     }
 
     private CommandRunner findRunner(BotCommand command) {

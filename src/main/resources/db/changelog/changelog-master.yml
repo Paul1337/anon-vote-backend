@@ -49,3 +49,11 @@ databaseChangeLog:
       file: db/changelog/changes/2025.12.23:user-set-false-confirmed_telegram_changelog.yml
   - include:
       file: db/changelog/changes/2025.12.24:user-add-telegram-id-unique-constraint_changelog.yml
+  - include:
+      file: db/changelog/changes/2025.01.25:user-add-email-unique-constraint_changelog.yml
+  - include:
+      file: db/changelog/changes/2025.01.25:user-active-code-on-delete-cascade.yml
+  - include:
+      file: db/changelog/changes/2026.01.25:poll-author_id-on-delete-set-null_changelog.yml
+  - include:
+      file: db/changelog/changes/2026.01.25:poll-author_id-nullable_changelog.yml

@@ -37,8 +37,7 @@ public class PollSubmitService {
     private SecurityContextService securityContextService;
 
     @Transactional
-    public void submitPoll(UUID pollId, Map<UUID, String> answersMap) {
-        User user = securityContextService.getCurrentUser();
+    public void submitPoll(User user, UUID pollId, Map<UUID, String> answersMap) {
         Poll poll = pollRepository.findById(pollId).orElseThrow(() -> new PollNotFoundException(pollId));
 
         if (pollRepository.existsByIdAndAttemptedUsersId(poll.getId(), user.getId())) {

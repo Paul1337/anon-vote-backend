@@ -1,5 +1,6 @@
 package com.limspyne.anon_vote.users.presenter.controllers;
 
+import com.limspyne.anon_vote.users.application.services.UserService;
 import com.limspyne.anon_vote.users.dto.AuthUser;
 import com.limspyne.anon_vote.users.dto.SendCode;
 import com.limspyne.anon_vote.users.instrastructure.security.EmailCodeAuthenticationToken;
@@ -27,8 +28,11 @@ public class AuthController {
 
     private final AuthCookieManager authCookieManager;
 
+    private final UserService userService;
+
     @PostMapping("/sendCode")
     public ResponseEntity<Void> sendCode(@RequestBody @Validated SendCode.Request request) {
+        userService.createIfAbsent(request.getEmail());
         sendCodeService.sendCode(request);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

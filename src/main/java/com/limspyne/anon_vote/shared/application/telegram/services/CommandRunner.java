@@ -7,10 +7,7 @@ import com.limspyne.anon_vote.shared.presenter.telegram.dto.TelegramDto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 public abstract class CommandRunner {
-    public CommandRunner() {
-    }
-
     protected abstract boolean canRun(BotCommand botCommand);
 
-    public abstract TelegramDto.Response handleCommand(TelegramDto.Request request, UserTelegramSession session);
+    public abstract TelegramDto.Response handleCommand(TelegramDto.Request request, BotCommandContext context);
 }

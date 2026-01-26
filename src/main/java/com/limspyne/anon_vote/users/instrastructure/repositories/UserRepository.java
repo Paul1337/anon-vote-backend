@@ -18,4 +18,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     boolean existsByTelegramId(long telegramId);
 
     Optional<User> findByTelegramId(long telegramId);
+
+    void deleteByTelegramId(long telegramId);
 }

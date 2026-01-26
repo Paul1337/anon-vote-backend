@@ -39,6 +39,7 @@ public class Question {
     private List<String> options;
 
     @Column(name = "position", nullable = false)
+    @Getter
     private int position;
 
     public Question(String text, List<String> options, int position) {

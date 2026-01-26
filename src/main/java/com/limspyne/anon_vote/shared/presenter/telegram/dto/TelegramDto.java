@@ -20,6 +20,10 @@ public class TelegramDto {
             }
             return null;
         }
+
+        public Response.Builder replyBuilder() {
+            return Response.forChat(telegramId);
+        }
     }
 
     @Data
@@ -28,6 +32,7 @@ public class TelegramDto {
         String text;
         String[] inlineButtons;
         boolean showMenu;
+        boolean isCommandFinished = false;
 
         public static Builder forChat(long telegramId) {
             return new Response.Builder(telegramId);

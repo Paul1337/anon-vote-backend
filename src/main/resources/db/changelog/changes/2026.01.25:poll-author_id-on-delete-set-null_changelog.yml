@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: poll-author_id-on-delete-set-null
+      author: paul
+      changes:
+        - sql: |
+            ALTER TABLE poll
+            DROP CONSTRAINT poll_user_relation_fk;
+        - sql: |
+            ALTER TABLE poll
+            ADD CONSTRAINT fk_poll_author_relation
+            FOREIGN KEY (author_id)
+            REFERENCES users(id)
+            ON DELETE SET NULL;
+

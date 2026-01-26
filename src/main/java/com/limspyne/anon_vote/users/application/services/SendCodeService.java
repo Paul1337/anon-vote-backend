@@ -5,6 +5,7 @@ import com.limspyne.anon_vote.shared.application.mail.services.HtmlMailSender;
 import com.limspyne.anon_vote.shared.inftrastrucure.util.TemplateLoader;
 import com.limspyne.anon_vote.users.application.exceptions.CodeSendLimitException;
 import com.limspyne.anon_vote.users.application.exceptions.CouldNotSendCodeException;
+import com.limspyne.anon_vote.users.application.exceptions.UserNotFoundException;
 import com.limspyne.anon_vote.users.dto.SendCode;
 import com.limspyne.anon_vote.users.application.entities.User;
 import com.limspyne.anon_vote.users.application.entities.UserActiveCode;
@@ -34,10 +35,9 @@ public class SendCodeService {
 
     private static final String CONFIRM_EMAIL_TEMPLATE = "templates/emails/confirm-email.html";
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(noRollbackFor = { CodeSendLimitException.class })
     public void sendCode(SendCode.Request request) {
-        Optional<User> userOptional = userRepository.findWithActiveCodesByEmail(request.getEmail());
-        var user = userOptional.orElseGet(() -> userService.createUser(request.getEmail()));
+        User user = userRepository.findWithActiveCodesByEmail(request.getEmail()).orElseThrow(UserNotFoundException::new);
         var code = new UserActiveCode(generateCode());
 
         if (!user.canRequestNewCode()) {
