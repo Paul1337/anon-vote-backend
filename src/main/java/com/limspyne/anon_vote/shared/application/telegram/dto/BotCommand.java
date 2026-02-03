@@ -11,6 +11,7 @@ import java.util.List;
 public enum BotCommand {
     AUTH(new AuthCommandContext()),
     UNKNOWN_COMMAND(new StubCommandContext()),
+    TO_MAIN_MENU(new StubCommandContext(), "/main_menu", "В главное меню"),
     ANSWER_POLL(new AnswerPollContext(), "/answer_poll", "📋 Пройти опрос", List.of("пройти", "опрос"));
 
     private final BotCommandContext initialContext;

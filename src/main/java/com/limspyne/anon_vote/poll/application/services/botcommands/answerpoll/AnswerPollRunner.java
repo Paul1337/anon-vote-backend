@@ -102,6 +102,7 @@ public class AnswerPollRunner extends CommandRunner {
                 if (isSelecting) {
                     yield selectPoll(request, context);
                 } else {
+                    context.getSearchData().setTitle(text);
                     yield updateSearchResults(request, context);
                 }
             }
@@ -130,8 +131,9 @@ public class AnswerPollRunner extends CommandRunner {
         var searchData = context.getSearchData();
         User user = userService.getUserByTelegramId(request.getTelegramId());
         var searchDto = new SearchPolls.Request();
-        searchDto.setTitle(request.getText());
+        searchDto.setTitle(searchData.getTitle());
         searchDto.setPage(searchData.getPageNumber());
+        searchDto.setSize(5);
         var result = pollQueryService.searchPolls(searchDto, new AppUserDetails(user.getEmail(), user.getId()));
 
         Function<GetPoll.QuestionDto, String> pollQuestionToPreview = question -> question.getText() + "( " + String.join("; ", question.getOptions()) + " )";

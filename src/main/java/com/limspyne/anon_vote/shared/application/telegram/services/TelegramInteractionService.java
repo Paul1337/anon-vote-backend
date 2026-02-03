@@ -25,6 +25,11 @@ public class TelegramInteractionService {
     public TelegramDto.Response handle(TelegramDto.Request request) {
         var session = telegramSessionRepository.getOrCreate(request.getTelegramId());
 
+        if (BotCommand.TO_MAIN_MENU.matches(request.getText())) {
+            session.clearCommandsQueue();
+            return commandRouter.startNewCommand(request, BotCommand.TO_MAIN_MENU, session);
+        }
+
         if (!session.isAuthed()) {
             session.setAuthed(userAuthService.isAuthedByTelegramId(request.getTelegramId()));
         }

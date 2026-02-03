@@ -9,6 +9,6 @@ import java.util.List;
 public class DefaultBotCommandRegistry implements BotCommandRegistry {
     @Override
     public List<BotCommand> globalCommands() {
-        return List.of(BotCommand.ANSWER_POLL);
+        return List.of(BotCommand.ANSWER_POLL, BotCommand.TO_MAIN_MENU);
     }
 }
