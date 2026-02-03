@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthCommandContext extends BotCommandContext implements Cloneable {
+public class AuthCommandContext extends BotCommandContext {
     private RegistrationState state = RegistrationState.NONE;
 
     @Override

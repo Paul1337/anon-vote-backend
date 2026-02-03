@@ -19,18 +19,16 @@ public class EmailCodeAuthenticationProvider implements AuthenticationProvider {
     @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         EmailCodeAuthenticationToken token = (EmailCodeAuthenticationToken) authentication;
-        String email = token.getEmail();
-        String code = token.getCode();
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(token.getEmail())
                 .orElseThrow(() -> new BadCredentialsException("Invalid email"));
 
-        boolean confirmationSucess = user.tryConfirmCodeValue(((EmailCodeAuthenticationToken) authentication).getCode());
+        boolean confirmationSucess = user.tryConfirmCodeValue(token.getCode());
         if (!confirmationSucess) throw new BadCredentialsException("Confirmation code invalid or expired");
         user.getActiveCodes().clear();
         userRepository.save(user);
 
-        return new EmailCodeAuthenticationToken(email, code, user.getId());
+        return new EmailCodeAuthenticationToken(token.getEmail(), token.getCode(), user.getId());
     }
 
     @Override

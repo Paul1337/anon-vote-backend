@@ -5,6 +5,7 @@ import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommandContext;
 import com.limspyne.anon_vote.shared.application.telegram.services.CommandRunner;
 import com.limspyne.anon_vote.shared.presenter.telegram.dto.TelegramDto;
 import com.limspyne.anon_vote.users.application.exceptions.CodeSendLimitException;
+import com.limspyne.anon_vote.users.application.exceptions.CouldNotSendCodeException;
 import com.limspyne.anon_vote.users.application.services.SendCodeService;
 import com.limspyne.anon_vote.users.application.services.UserService;
 import com.limspyne.anon_vote.users.dto.SendCode;
@@ -78,7 +79,9 @@ public class AuthCommandRunner extends CommandRunner {
         try {
             sendCodeService.sendCode(new SendCode.Request(email));
         } catch (CodeSendLimitException exception) {
-            return TelegramDto.Response.forChat(chatId).text("Слишком частый запрос кода, попробуйте через минуту").inlineButtons(actionButtonTexts).build();
+            return TelegramDto.Response.forChat(chatId).text("Слишком частый запрос кода, попробуйте через минуту").build();
+        } catch (CouldNotSendCodeException exception) {
+            return TelegramDto.Response.forChat(chatId).text("Ошибка отправки сообщения, неверный адрес, введите ещё раз").build();
         }
 
         authCommandContext.setState(AuthCommandContext.RegistrationState.WAIT_CODE);
@@ -94,6 +97,8 @@ public class AuthCommandRunner extends CommandRunner {
                 return TelegramDto.Response.forChat(chatId).text("Ок, новый код был отправлен на вашу почту, введите его, пожалуйста").build();
             } catch (CodeSendLimitException exception) {
                 return TelegramDto.Response.forChat(chatId).text("Слишком частый запрос кода, попробуйте через минуту").inlineButtons(actionButtonTexts).build();
+            } catch (CouldNotSendCodeException exception) {
+                return TelegramDto.Response.forChat(chatId).text("Ошибка отправки сообщения, возможно неверный email").inlineButtons(actionButtonTexts).build();
             }
         }
 

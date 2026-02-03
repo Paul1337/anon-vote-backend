@@ -38,7 +38,7 @@ public class AuthController {
     }
 
     @PostMapping({ "/", "" })
-    public ResponseEntity<Void> authorizeUser(@RequestBody @Validated AuthUser.Request request, HttpServletResponse response) {
+    public ResponseEntity<Void> authenticateUser(@RequestBody @Validated AuthUser.Request request) {
         EmailCodeAuthenticationToken authToken = new EmailCodeAuthenticationToken(request.getEmail(), request.getCode());
         Authentication authentication = authenticationManager.authenticate(authToken);
 

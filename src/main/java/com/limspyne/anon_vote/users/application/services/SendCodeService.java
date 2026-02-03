@@ -35,7 +35,7 @@ public class SendCodeService {
 
     private static final String CONFIRM_EMAIL_TEMPLATE = "templates/emails/confirm-email.html";
 
-    @Transactional(noRollbackFor = { CodeSendLimitException.class })
+    @Transactional(noRollbackFor = { CodeSendLimitException.class, CouldNotSendCodeException.class })
     public void sendCode(SendCode.Request request) {
         User user = userRepository.findWithActiveCodesByEmail(request.getEmail()).orElseThrow(UserNotFoundException::new);
         var code = new UserActiveCode(generateCode());
