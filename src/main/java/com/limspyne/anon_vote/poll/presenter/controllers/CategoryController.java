@@ -29,7 +29,7 @@ public class CategoryController {
 
     @GetMapping({"", "/"})
     @Operation(summary = "Find all root categories with specified depth") // добавить paging?
-    public ResponseEntity<List<GetCategory.ResponseDto>> findRootCategories(@RequestParam(name = "depth", defaultValue = "1") @Min(1) @Max(10) int depth) {
+    public ResponseEntity<List<GetCategory.ResponseDto>> findRootCategories(@RequestParam(name = "depth", defaultValue = "1") @Min(0) @Max(10) int depth) {
         var categoriesDto = categoryQueryService.findRootCategoriesWithDepth(depth);
         return ResponseEntity.status(HttpStatus.OK).body(categoriesDto);
     }
@@ -38,7 +38,7 @@ public class CategoryController {
     @Operation(summary = "Find all child categories with specified depth") // добавить paging?
     public ResponseEntity<List<GetCategory.ResponseDto>> findChildCategories(
             @PathVariable(name = "id") String parentCategoryId,
-            @RequestParam(defaultValue = "1") @Min(1) @Max(10) int depth) {
+            @RequestParam(defaultValue = "1") @Min(0) @Max(10) int depth) {
         var categoriesDto = categoryQueryService.findChildCategoriesWithDepth(parentCategoryId, depth);
         return ResponseEntity.status(HttpStatus.OK).body(categoriesDto);
     }

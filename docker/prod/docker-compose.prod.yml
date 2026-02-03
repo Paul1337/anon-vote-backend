@@ -1,11 +1,10 @@
 version: '3.8'
-name: anon-vote
+name: anon-vote-dev
 
 services:
   postgres:
     image: postgres:15-alpine
     restart: unless-stopped
-    read_only: true
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -25,19 +24,23 @@ services:
   cache:
     image: redis:8.2.0
     restart: unless-stopped
-    read_only: true
+    environment:
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     volumes:
       - redis_data:/data
     ports:
-      - "${REDIS_PORT:-6379}:6379"
+      - "${REDIS_PORT}:6379"
+    networks:
+      - server-net
 
   pgadmin:
     image: dpage/pgadmin4
     restart: unless-stopped
-    read_only: true
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-p@x128.ru}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-123123}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     ports:
       - "${PGADMIN_PORT:-8080}:80"
     depends_on:
@@ -51,27 +54,33 @@ services:
   app:
     build:
       context: ../..
-      dockerfile: docker/dev/prod.Dockerfile
+      dockerfile: docker/prod/prod.Dockerfile
     restart: unless-stopped
-    read_only: true
     depends_on:
       postgres:
         condition: service_healthy
       cache:
         condition: service_started
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
-      SPRING_DATASOURCE_USER: ${DB_USER}
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-      SPRING_REDIS_HOST: ${REDIS_HOST}
-      SPRING_REDIS_PORT: ${REDIS_PORT}
+      APP_PORT: ${APP_PORT}
+      DB_URL: ${DB_URL}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      WATCH_EXEC_DOWNLOAD: ${WATCH_EXEC_DOWNLOAD}
       SPRING_PROFILES_ACTIVE: dev
-    volumes:
-      - ../../src:/app/src:rw
-      - ../../pom.xml:/app/pom.xml:rw
-      - maven-repo:/root/.m2
+      JAVA_OPTS: ${JAVA_OPTS}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS}
+      TELEGRAM_BOT_USERNAME: ${TELEGRAM_BOT_USERNAME}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
     ports:
-      - "${APP_PORT:-8081}:8080"
+      - "${APP_PORT}:${APP_PORT}"
       - "5005:5005"
     networks:
       - server-net

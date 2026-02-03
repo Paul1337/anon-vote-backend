@@ -3,6 +3,7 @@ package com.limspyne.anon_vote.global;
 import com.limspyne.anon_vote.shared.application.exceptions.AppBasicException;
 import com.limspyne.anon_vote.shared.presenter.dto.HttpErrorResponse;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessException;
@@ -12,6 +13,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.util.List;
 
@@ -42,6 +44,19 @@ public class GlobalExceptionHandler {
                 .badRequest()
                 .body(new HttpErrorResponse("Validation failed", errors));
     }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<HttpErrorResponse> controllerMethodValidationException(HandlerMethodValidationException ex) {
+        List<String> errors = ex.getAllErrors()
+                .stream()
+                .map(MessageSourceResolvable::getDefaultMessage)
+                .toList();
+
+        return ResponseEntity
+                .badRequest()
+                .body(new HttpErrorResponse("Validation failed", errors));
+    }
+
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<HttpErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {

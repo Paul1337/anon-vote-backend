@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,8 @@ public class CategoryQueryService {
     @Transactional(readOnly = true)
     public List<GetCategory.ResponseDto> findChildCategoriesWithDepth(String parentCategoryId, int depth) {
         var parentCategory = categoryRepository.findById(UUID.fromString(parentCategoryId)).orElseThrow(CategoryNotFoundException::new);
-        var allCategoriesInSubtree = categoryRepository.findAllChildrenByRootPathWithMaxDepth(parentCategory.getPath(), depth);
+        var parentDepth = (int)Arrays.stream(parentCategory.getPath().split("/")).filter(part -> !part.isBlank()).count();
+        var allCategoriesInSubtree = categoryRepository.findAllChildrenByRootPathWithMaxDepth(parentCategory.getPath(), depth + parentDepth);
         var allCategoriesInSubtreeDto = mergeCategoriesChildren(allCategoriesInSubtree);
         var parentCategoryUUID = UUID.fromString(parentCategoryId);
 

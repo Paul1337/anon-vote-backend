@@ -9,6 +9,6 @@ FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
 
-EXPOSE 8080 5005
+EXPOSE ${APP_PORT}
 #ENTRYPOINT ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar", "app.jar"]
 ENTRYPOINT ["java", "-jar", "app.jar"]

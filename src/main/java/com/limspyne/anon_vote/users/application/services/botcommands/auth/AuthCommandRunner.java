@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class AuthCommandRunner extends CommandRunner {
@@ -62,7 +64,7 @@ public class AuthCommandRunner extends CommandRunner {
 
         if (userOptional.isPresent()) {
             var user = userOptional.get();
-            if (user.getTelegramId() == null) {
+            if (!Objects.equals(user.getTelegramId(), chatId)) {
                 userService.deleteByTelegramId(chatId);
                 userRepository.flush();
                 user.setTelegramId(chatId);
