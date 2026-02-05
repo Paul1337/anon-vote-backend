@@ -47,6 +47,7 @@ public class PollCreationService {
     @Transactional
     public GetPoll.Response createPoll(CreatePoll.Request dto, AppUserDetails appUserDetails) {
         UUID categoryId = UUID.fromString(dto.categoryId());
+
         PollCategory categoryForCreatedPoll = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
         if (dto.categoryName() != null) {
