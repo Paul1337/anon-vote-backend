@@ -5,6 +5,7 @@ import com.limspyne.anon_vote.poll.application.entities.PollCategory;
 import com.limspyne.anon_vote.poll.application.entities.PollTag;
 import com.limspyne.anon_vote.poll.application.entities.Question;
 import com.limspyne.anon_vote.poll.application.exceptions.CategoryNotFoundException;
+import com.limspyne.anon_vote.poll.application.exceptions.DuplicateAnswerInPollException;
 import com.limspyne.anon_vote.poll.infrastructure.mappers.PollMapper;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.CategoryRepository;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -60,6 +62,10 @@ public class PollCreationService {
         poll.setTags(tags);
 
         dto.questions().forEach(qstDto -> {
+            if (hasDuplicateOptions(qstDto)) {
+                throw new DuplicateAnswerInPollException();
+            }
+
             var question = new Question(qstDto.getText(), qstDto.getOptions(), poll.getQuestions().size());
             poll.addQuestion(question);
         });
@@ -67,5 +73,17 @@ public class PollCreationService {
         pollRepository.save(poll);
 
         return pollMapper.toResponseForAnonymousUser(poll);
+    }
+
+    private boolean hasDuplicateOptions(CreatePoll.QuestionDto questionDto) {
+        var options = new HashSet<>();
+
+        for (var option: questionDto.getOptions()) {
+            if (!options.add(option)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
