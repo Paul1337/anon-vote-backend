@@ -57,3 +57,7 @@ databaseChangeLog:
       file: db/changelog/changes/2026.01.25:poll-author_id-on-delete-set-null_changelog.yml
   - include:
       file: db/changelog/changes/2026.01.25:poll-author_id-nullable_changelog.yml
+  - include:
+      file: db/changelog/changes/2026.02.06:poll-relations-on-delete-cascade.changelog.yml
+  - include:
+      file: db/changelog/changes/2026.02.06:poll-question-answer-question-on-delete-cascade.changelog.yml
