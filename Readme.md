@@ -1,7 +1,7 @@
 # Сервис анонимных опросов
 
 **Ссылка:** http://anon-vote.ru  
-**Стек:** Java, Spring Boot, PostgreSQL, Redis, Telegram Bot API. <br/>На фронте **NextJS**
+**Стек:** Java, Spring Boot, JWT Auth, PostgreSQL, Redis, Telegram Bot API, SMTP <br/>На фронте **NextJS**
 
 ## Решаемая проблема
 
