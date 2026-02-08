@@ -3,7 +3,19 @@
 Anon-vote - это сервис для проведения анонимных опросов в любой сфере, позволяет быстро создавать опросы для социологических или маркетинговых исследований.   
 
 **Ссылка:** http://anon-vote.ru  
-**Стек:** Java 21, Spring Boot 3, PostgreSQL 15, Redis 8, Docker
+
+**Backend:**  
+Java 21, Spring Boot 3, PostgreSQL 15, Redis 8
+
+**Frontend:**  
+Next.js 15.5
+
+**Infrastructure:**  
+Docker, Docker Compose
+
+**Additional:**  
+Spring Data JPA, Spring MVC, Spring Security, Liquibase, Telegram Bot API, Angus Mail
+
 <br/>
 На фронте **NextJS** 15.5
 
