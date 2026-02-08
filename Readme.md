@@ -16,9 +16,6 @@ Docker, Docker Compose
 **Additional:**  
 Spring Data JPA, Spring MVC, Spring Security, Liquibase, Telegram Bot API, Angus Mail
 
-<br/>
-На фронте **NextJS** 15.5
-
 ## Архитектура проекта
 
 В проекте модульная архитектура со следующими слоями в каждом модуле: <br/>
