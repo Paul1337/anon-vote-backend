@@ -8,11 +8,13 @@ import org.springframework.stereotype.Repository;
 import java.time.Duration;
 import java.util.Optional;
 
+/**
+ * Управление сессиями телеграм пользователей.
+ * Для каждого пользователя создаётся сессия в redis,
+ * которая позволяет хранить очередь команд и контекст каждой команды
+**/
 @Repository
 @RequiredArgsConstructor
-// управление сессиями телеграм пользователей
-// для каждого пользователя создаётся сессия в redis,
-// которая позволяет хранить очередь команд и контекст каждой команды
 public class UserTelegramSessionRepository {
     private static final Duration TTL = Duration.ofMinutes(15);
 
