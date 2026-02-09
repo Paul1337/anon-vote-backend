@@ -32,7 +32,7 @@ public class TelegramInteractionService {
         }
 
         // оптимизация: проверяем userAuthService.isAuthedByTelegramId(...) только если нет свойства isAuthed
-        // его нет только при создании телеграм сессии или для неавторизованного пользователя
+        // его нет только при создании новой телеграм сессии или для неавторизованного пользователя
         if (!session.isAuthed()) {
             session.setAuthed(userAuthService.isAuthedByTelegramId(request.getTelegramId()));
         }

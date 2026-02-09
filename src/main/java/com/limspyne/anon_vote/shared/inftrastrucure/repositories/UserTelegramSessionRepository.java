@@ -10,6 +10,9 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
+// управление сессиями телеграм пользователей
+// для каждого пользователя создаётся сессия в redis,
+// которая позволяет хранить очередь команд и контекст каждой команды
 public class UserTelegramSessionRepository {
     private static final Duration TTL = Duration.ofMinutes(15);
 

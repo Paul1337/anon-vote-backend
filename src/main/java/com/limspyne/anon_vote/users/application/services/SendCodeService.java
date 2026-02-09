@@ -30,16 +30,21 @@ public class SendCodeService {
     @Autowired
     private HtmlMailSender mailService;
 
-    @Autowired
-    private UserService userService;
-
     private static final String CONFIRM_EMAIL_TEMPLATE = "templates/emails/confirm-email.html";
 
+    /**
+     * Отправляет код подтверждения на email пользователя.
+     * Используется для верификации email и обеспечения уникальности пользователей.
+     * - noRollbackFor = CodeSendLimitException.class: при превышении лимита код НЕ сохраняется
+     * - noRollbackFor = CouldNotSendCodeException.class: при ошибке отправки код уже сохранен
+     * Это предотвращает повторную отправку кода при временных проблемах с почтой
+     */
     @Transactional(noRollbackFor = { CodeSendLimitException.class, CouldNotSendCodeException.class })
     public void sendCode(SendCode.Request request) {
         User user = userRepository.findWithActiveCodesByEmail(request.getEmail()).orElseThrow(UserNotFoundException::new);
         var code = new UserActiveCode(generateCode());
 
+        // Защита от спама и злоупотреблений
         if (!user.canRequestNewCode()) {
             throw new CodeSendLimitException(request.getEmail());
         }

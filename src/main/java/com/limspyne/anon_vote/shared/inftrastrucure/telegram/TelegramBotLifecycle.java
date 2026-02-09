@@ -13,6 +13,7 @@ public class TelegramBotLifecycle {
 
     private static final Logger logger = LoggerFactory.getLogger(TelegramBotLifecycle.class);
 
+    // нужно для корректного завершения long-polling бота при перезапуске проекта
     @PreDestroy
     void shutdown() {
         logger.info("Shutting down..");
