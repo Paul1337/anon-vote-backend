@@ -25,18 +25,24 @@ public class TelegramInteractionService {
     public TelegramDto.Response handle(TelegramDto.Request request) {
         var session = telegramSessionRepository.getOrCreate(request.getTelegramId());
 
+        // проверка на сброс команд
         if (BotCommand.TO_MAIN_MENU.matches(request.getText())) {
             session.clearCommandsQueue();
             return commandRouter.startNewCommand(request, BotCommand.TO_MAIN_MENU, session);
         }
 
+        // оптимизация: проверяем userAuthService.isAuthedByTelegramId(...) только если нет свойства isAuthed
+        // его нет только при создании телеграм сессии или для неавторизованного пользователя
         if (!session.isAuthed()) {
             session.setAuthed(userAuthService.isAuthedByTelegramId(request.getTelegramId()));
         }
 
+        // попытка обработать ссылку на телеграм бота
+        // в этом случае сразу нужно запустить команду опираясь на параметры ссылки
         var startLinkResult = startLinkHandler.tryHandleStartLink(request, session);
         if (startLinkResult != null) return startLinkResult;
 
+        // продолжаем активную команду
         if (session.hasActiveCommand()) {
             return commandRouter.handleActiveCommand(request, session);
         }

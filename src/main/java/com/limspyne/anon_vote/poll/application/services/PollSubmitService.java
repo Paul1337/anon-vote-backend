@@ -40,10 +40,12 @@ public class PollSubmitService {
     public void submitPoll(User user, UUID pollId, Map<UUID, String> answersMap) {
         Poll poll = pollRepository.findById(pollId).orElseThrow(() -> new PollNotFoundException(pollId));
 
+        // Один пользователь может пройти опрос только один раз
         if (pollRepository.existsByIdAndAttemptedUsersId(poll.getId(), user.getId())) {
             throw new SubmitNotUniqueException();
         }
 
+        // Используем getReferenceById() для избежания лишних запросов к БД
         List<PollQuestionAnswer> answersEntities = answersMap.entrySet().stream().map(
                 (entry) -> new PollQuestionAnswer(questionRepository.getReferenceById(entry.getKey()), entry.getValue())
         ).toList();

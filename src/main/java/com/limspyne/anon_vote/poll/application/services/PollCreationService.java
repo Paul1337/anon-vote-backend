@@ -25,7 +25,6 @@ import java.util.UUID;
 
 @Service
 public class PollCreationService {
-
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -47,9 +46,10 @@ public class PollCreationService {
     @Transactional
     public GetPoll.Response createPoll(CreatePoll.Request dto, AppUserDetails appUserDetails) {
         UUID categoryId = UUID.fromString(dto.categoryId());
-
         PollCategory categoryForCreatedPoll = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
+        // Если указано кастомное название категории, создаем подкатегорию
+        // Это позволяет пользователям уточнять тему внутри существующей иерархии
         if (dto.categoryName() != null) {
             categoryForCreatedPoll = new PollCategory(dto.categoryName(), categoryForCreatedPoll, List.of());
             categoryRepository.save(categoryForCreatedPoll);

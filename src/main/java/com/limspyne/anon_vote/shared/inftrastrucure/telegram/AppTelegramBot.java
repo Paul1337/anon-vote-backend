@@ -1,11 +1,9 @@
 package com.limspyne.anon_vote.shared.inftrastrucure.telegram;
-import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommand;
+
 import com.limspyne.anon_vote.shared.application.telegram.services.BotCommandRegistry;
 import com.limspyne.anon_vote.shared.application.telegram.services.TelegramInteractionService;
 import com.limspyne.anon_vote.shared.presenter.telegram.dto.TelegramDto;
 import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
-import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,6 +53,7 @@ public class AppTelegramBot extends TelegramLongPollingBot {
         if (response == null) return;
         executeMessage(telegramResponseProvider.getResponseMessage(response));
 
+        // возможно команда завершилась и в очереди команд есть следующая, тогда надо её выполнить сразу
         if (response.isCommandFinished()) {
             var nextCommandResponse = interactionService.handleNextCommand(new TelegramDto.Request("", request.getTelegramId()));
             if (nextCommandResponse != null) {

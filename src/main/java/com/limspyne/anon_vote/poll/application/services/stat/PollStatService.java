@@ -27,9 +27,6 @@ public class PollStatService {
     @Autowired
     private PollAnswerRecordRepository answerRecordRepository;
 
-    @Autowired
-    private PollQueryService pollQueryService;
-
     @Transactional(readOnly = true)
     public Map<UUID, Map<String, Long>> getBasicStat(UUID pollId) {
         var pollAnswerRecords = answerRecordRepository.findAllByPollId(pollId);
@@ -60,9 +57,17 @@ public class PollStatService {
 
     @Transactional(readOnly = true)
     public GetDailyStat.Response getAnswerStatsByDay(UUID pollId, LocalDate startDate, LocalDate endDate) {
+        // Бизнес-метод: получение кумулятивной статистики по дням
+        // Полезно для анализа трендов и динамики ответов
+
         var poll = pollRepository.findById(pollId).orElseThrow(() -> new PollNotFoundException(pollId));
 
-        List<AnswerStatProjection> statsInInterval = answerRecordRepository.getAnswerStatsByDateRangeGroupedByDays(pollId, startDate.atStartOfDay(), endDate.atStartOfDay().plusDays(1));
+        List<AnswerStatProjection> statsInInterval = answerRecordRepository
+                .getAnswerStatsByDateRangeGroupedByDays(
+                        pollId,
+                        startDate.atStartOfDay(),
+                        endDate.atStartOfDay().plusDays(1)
+                );
         List<StatProjection> statsUpToStartDay = answerRecordRepository.getAnswerStatsUpToInstant(pollId, startDate.atStartOfDay());
 
         Map<LocalDate, List<AnswerStatProjection>> dateToStatProjections = statsInInterval.stream()
