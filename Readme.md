@@ -4,6 +4,8 @@ Anon-vote - это сервис для проведения анонимных �
 
 **Ссылка:** http://anon-vote.ru  
 
+**Swagger Open API** http://anon-vote.ru:8081/swagger-ui/index.html
+
 **Backend:**  
 Java 21, Spring Boot 3, PostgreSQL 15, Redis 8
 
