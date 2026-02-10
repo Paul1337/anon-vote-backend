@@ -2,7 +2,7 @@ package com.limspyne.anon_vote.shared.application.telegram.services;
 
 import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommand;
 import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommandData;
-import com.limspyne.anon_vote.shared.presenter.telegram.dto.TelegramDto;
+import com.limspyne.anon_vote.shared.application.telegram.dto.TelegramDto;
 import com.limspyne.anon_vote.shared.inftrastrucure.repositories.UserTelegramSessionRepository;
 import com.limspyne.anon_vote.users.application.services.botcommands.auth.AuthCommandContext;
 import com.limspyne.anon_vote.users.application.services.UserAuthService;

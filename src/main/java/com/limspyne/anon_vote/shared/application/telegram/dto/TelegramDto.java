@@ -1,9 +1,11 @@
-package com.limspyne.anon_vote.shared.presenter.telegram.dto;
+package com.limspyne.anon_vote.shared.application.telegram.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
+import java.util.List;
 
 public class TelegramDto {
     @Data
@@ -30,7 +32,7 @@ public class TelegramDto {
     public static class Response {
         Long telegramId;
         String text;
-        String[] inlineButtons;
+        List<InlineButton> inlineButtons;
         boolean showMenu;
         boolean isCommandFinished = false;
 
@@ -40,11 +42,28 @@ public class TelegramDto {
 
         private Response() {}
 
+        @Data
+        public static class InlineButton {
+            private String name;
+            private String callbackData;
+
+            public InlineButton(String name, String callbackData) {
+                if (!callbackData.startsWith("btn_")) callbackData = "btn_" + callbackData;
+
+                this.name = name;
+                this.callbackData = callbackData;
+            }
+
+            public boolean match(String text) {
+                return text.equalsIgnoreCase(name) || text.equalsIgnoreCase(callbackData);
+            }
+        }
+
         @NoArgsConstructor
         public static class Builder {
             Long telegramId;
             String text;
-            String[] inlineButtons;
+            List<InlineButton> inlineButtons;
             boolean showMenu;
 
             public Builder(long telegramId) {
@@ -56,7 +75,7 @@ public class TelegramDto {
                 return this;
             }
 
-            public Builder inlineButtons(String[] inlineButtons) {
+            public Builder inlineButtons(List<InlineButton> inlineButtons) {
                 this.inlineButtons = inlineButtons;
                 return this;
             }

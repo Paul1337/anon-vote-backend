@@ -2,7 +2,7 @@ package com.limspyne.anon_vote.shared.inftrastrucure.telegram;
 
 import com.limspyne.anon_vote.shared.application.telegram.services.BotCommandRegistry;
 import com.limspyne.anon_vote.shared.application.telegram.services.TelegramInteractionService;
-import com.limspyne.anon_vote.shared.presenter.telegram.dto.TelegramDto;
+import com.limspyne.anon_vote.shared.application.telegram.dto.TelegramDto;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +54,8 @@ public class AppTelegramBot extends TelegramLongPollingBot {
         executeMessage(telegramResponseProvider.getResponseMessage(response));
 
         // возможно команда завершилась и в очереди команд есть следующая, тогда надо её выполнить сразу
+        // это например используется, когда даётся ссылка на опрос неавторизованному пользователю
+        // в этом случае вначале выполняется команда авторизации, затем ответ на опрос
         if (response.isCommandFinished()) {
             var nextCommandResponse = interactionService.handleNextCommand(new TelegramDto.Request("", request.getTelegramId()));
             if (nextCommandResponse != null) {

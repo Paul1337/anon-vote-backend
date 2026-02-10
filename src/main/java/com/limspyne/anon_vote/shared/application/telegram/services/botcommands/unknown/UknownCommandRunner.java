@@ -3,7 +3,7 @@ package com.limspyne.anon_vote.shared.application.telegram.services.botcommands.
 import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommand;
 import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommandContext;
 import com.limspyne.anon_vote.shared.application.telegram.services.CommandRunner;
-import com.limspyne.anon_vote.shared.presenter.telegram.dto.TelegramDto;
+import com.limspyne.anon_vote.shared.application.telegram.dto.TelegramDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -4,7 +4,7 @@ import com.limspyne.anon_vote.poll.application.services.botcommands.answerpoll.A
 import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommand;
 import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommandData;
 import com.limspyne.anon_vote.shared.application.telegram.dto.UserTelegramSession;
-import com.limspyne.anon_vote.shared.presenter.telegram.dto.TelegramDto;
+import com.limspyne.anon_vote.shared.application.telegram.dto.TelegramDto;
 import com.limspyne.anon_vote.users.application.services.UserAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

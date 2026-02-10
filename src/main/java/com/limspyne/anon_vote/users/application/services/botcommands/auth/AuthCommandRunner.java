@@ -3,7 +3,7 @@ package com.limspyne.anon_vote.users.application.services.botcommands.auth;
 import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommand;
 import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommandContext;
 import com.limspyne.anon_vote.shared.application.telegram.services.CommandRunner;
-import com.limspyne.anon_vote.shared.presenter.telegram.dto.TelegramDto;
+import com.limspyne.anon_vote.shared.application.telegram.dto.TelegramDto;
 import com.limspyne.anon_vote.users.application.exceptions.CodeSendLimitException;
 import com.limspyne.anon_vote.users.application.exceptions.CouldNotSendCodeException;
 import com.limspyne.anon_vote.users.application.services.SendCodeService;
@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -25,10 +26,13 @@ public class AuthCommandRunner extends CommandRunner {
 
     private final UserRepository userRepository;
 
-    private String newCodeButtonText = "Отправить новый код";
-    private String changeMailButtonText = "Изменить почту";
+    public static class Buttons {
+        public static final TelegramDto.Response.InlineButton NEW_CODE = new TelegramDto.Response.InlineButton("Новый код", "btn_new_code");
 
-    private String[] actionButtonTexts = { newCodeButtonText, changeMailButtonText };
+        public static final TelegramDto.Response.InlineButton CHANGE_MAIL = new TelegramDto.Response.InlineButton("Изменить почту", "btn_change_mail");
+    }
+
+    private static final List<TelegramDto.Response.InlineButton> ACTION_BUTTONS = List.of(Buttons.NEW_CODE, Buttons.CHANGE_MAIL);
 
     @Override
     protected boolean canRun(BotCommand botCommand) {
@@ -93,18 +97,18 @@ public class AuthCommandRunner extends CommandRunner {
     private TelegramDto.Response handleCode(AuthCommandContext authCommandContext, Long chatId, TelegramDto.Request request) {
         var user = userService.getUserByTelegramId(chatId);
 
-        if (request.getText().equalsIgnoreCase(newCodeButtonText)) {
+        if (Buttons.NEW_CODE.match(request.getText()))  {
             try {
                 sendCodeService.sendCode(new SendCode.Request(user.getEmail()));
                 return TelegramDto.Response.forChat(chatId).text("Ок, новый код был отправлен на вашу почту, введите его, пожалуйста").build();
             } catch (CodeSendLimitException exception) {
-                return TelegramDto.Response.forChat(chatId).text("Слишком частый запрос кода, попробуйте через минуту").inlineButtons(actionButtonTexts).build();
+                return TelegramDto.Response.forChat(chatId).text("Слишком частый запрос кода, попробуйте через минуту").inlineButtons(ACTION_BUTTONS).build();
             } catch (CouldNotSendCodeException exception) {
-                return TelegramDto.Response.forChat(chatId).text("Ошибка отправки сообщения, возможно неверный email").inlineButtons(actionButtonTexts).build();
+                return TelegramDto.Response.forChat(chatId).text("Ошибка отправки сообщения, возможно неверный email").inlineButtons(ACTION_BUTTONS).build();
             }
         }
 
-        if (request.getText().equalsIgnoreCase(changeMailButtonText)) {
+        if (Buttons.CHANGE_MAIL.match(request.getText())) {
             authCommandContext.setState(AuthCommandContext.RegistrationState.WAIT_EMAIL);
             return TelegramDto.Response.forChat(chatId).text("Ок, введите пожалуйста ваш новый email").build();
         }
@@ -116,7 +120,7 @@ public class AuthCommandRunner extends CommandRunner {
             authCommandContext.setFinished(true);
             return TelegramDto.Response.forChat(chatId).text("🎉 Поздравляю, вы успешно зарегистрированы!").withMenu().build();
         } else {
-            return TelegramDto.Response.forChat(chatId).text("❌ Код неверный или истёк").inlineButtons(actionButtonTexts).build();
+            return TelegramDto.Response.forChat(chatId).text("❌ Код неверный или истёк").inlineButtons(ACTION_BUTTONS).build();
         }
     }
 

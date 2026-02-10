@@ -1,6 +1,5 @@
 package com.limspyne.anon_vote.poll.application.services.botcommands.answerpoll;
 
-import com.limspyne.anon_vote.poll.application.entities.Poll;
 import com.limspyne.anon_vote.poll.application.entities.Question;
 import com.limspyne.anon_vote.poll.application.exceptions.PollNotFoundException;
 import com.limspyne.anon_vote.poll.application.services.PollSubmitService;
@@ -11,7 +10,7 @@ import com.limspyne.anon_vote.poll.presenter.dto.SearchPolls;
 import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommand;
 import com.limspyne.anon_vote.shared.application.telegram.dto.BotCommandContext;
 import com.limspyne.anon_vote.shared.application.telegram.services.CommandRunner;
-import com.limspyne.anon_vote.shared.presenter.telegram.dto.TelegramDto;
+import com.limspyne.anon_vote.shared.application.telegram.dto.TelegramDto;
 import com.limspyne.anon_vote.users.application.entities.User;
 import com.limspyne.anon_vote.users.application.services.UserService;
 import com.limspyne.anon_vote.users.instrastructure.security.AppUserDetails;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +26,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -41,15 +40,9 @@ public class AnswerPollRunner extends CommandRunner {
     private final UserService userService;
 
     public static class Buttons {
-        private static final String SHOW_ALL = "показать все";
+        private static final TelegramDto.Response.InlineButton PAGINATION_PREV = new TelegramDto.Response.InlineButton("назад", "btn_prev");
 
-        private static final String SELECT_CATEGORY = "выбрать категорию";
-
-        private static final String SELECT_TAGS = "выбрать теги";
-
-        private static final String PAGINATION_PREV = "назад";
-
-        private static final String PAGINATION_NEXT = "вперёд";
+        private static final TelegramDto.Response.InlineButton PAGINATION_NEXT = new TelegramDto.Response.InlineButton("вперёд", "btn_next");
     }
 
     @Override
@@ -91,22 +84,18 @@ public class AnswerPollRunner extends CommandRunner {
     private TelegramDto.Response handleSelectPoll(TelegramDto.Request request, AnswerPollContext context) {
         String text = request.getText().toLowerCase();
 
-        return switch (text.toLowerCase()) {
-            case Buttons.PAGINATION_PREV -> handlePrevPage(request, context);
-            case Buttons.PAGINATION_NEXT -> handleNextPage(request, context);
+        if (Buttons.PAGINATION_PREV.match(text)) return handlePrevPage(request, context);
+        if (Buttons.PAGINATION_NEXT.match(text)) return handleNextPage(request, context);
 
-            default -> {
-                boolean isNumeric = text.chars().allMatch(Character::isDigit);
-                boolean isSelecting = isNumeric && !context.getSearchData().getResults().isEmpty();
+        boolean isNumeric = text.chars().allMatch(Character::isDigit);
+        boolean isSelecting = isNumeric && !context.getSearchData().getResults().isEmpty();
 
-                if (isSelecting) {
-                    yield selectPoll(request, context);
-                } else {
-                    context.getSearchData().setTitle(text);
-                    yield updateSearchResults(request, context);
-                }
-            }
-        };
+        if (isSelecting) {
+            return selectPoll(request, context);
+        } else {
+            context.getSearchData().setTitle(text);
+            return updateSearchResults(request, context);
+        }
     }
 
     private TelegramDto.Response handleNextPage(TelegramDto.Request request, AnswerPollContext context) {
@@ -153,11 +142,11 @@ public class AnswerPollRunner extends CommandRunner {
                                 .collect(Collectors.joining("\n\n")) + "\n\n" +
                 "Выберете опрос числом %d - %d".formatted(1, result.getContent().size());
 
-        List<String> buttons = new ArrayList<>();
+        List<TelegramDto.Response.InlineButton> buttons = new ArrayList<>();
         if (result.isHasNextPage()) buttons.add(Buttons.PAGINATION_NEXT);
         if (searchData.getPageNumber() > 0) buttons.add(Buttons.PAGINATION_PREV);
 
-        return request.replyBuilder().text(responseText).inlineButtons(buttons.toArray(new String[0])).build();
+        return request.replyBuilder().text(responseText).inlineButtons(buttons).build();
     }
 
     private TelegramDto.Response selectPoll(TelegramDto.Request request, AnswerPollContext context) {
@@ -194,6 +183,13 @@ public class AnswerPollRunner extends CommandRunner {
             }
         } else if (context.getState() == AnswerPollContext.AnswerPollState.ANSWERING) {
             var question = getCurrentQuestion(context).orElseThrow(() -> new IllegalStateException("No question to answer"));
+            var options = question.getOptions();
+            var givenAnswer = request.getText();
+
+            if (IntStream.range(0, options.size()).noneMatch(index -> buttonFromOption(options.get(index), index).match(givenAnswer))) {
+                return request.replyBuilder().text("Недопустимый вариант ответа, повторите ещё раз").build();
+            }
+
             context.getAnswers().put(question.getId(), request.getText());
             context.nextQuestion();
         }
@@ -223,8 +219,15 @@ public class AnswerPollRunner extends CommandRunner {
 
     private TelegramDto.Response mapQuestionToReponse(Question question, TelegramDto.Request request) {
         String text = question.getText();
-        var inlineButtons = question.getOptions().toArray(new String[0]);
+        var options = question.getOptions();
+        var inlineButtons = IntStream.range(0, options.size()).mapToObj(
+                index -> buttonFromOption(options.get(index), index)
+        ).toList();
         return request.replyBuilder().text(text).inlineButtons(inlineButtons).build();
+    }
+
+    private TelegramDto.Response.InlineButton buttonFromOption(String option, int index) {
+        return new TelegramDto.Response.InlineButton(option, "btn_option_" + index);
     }
 
 
