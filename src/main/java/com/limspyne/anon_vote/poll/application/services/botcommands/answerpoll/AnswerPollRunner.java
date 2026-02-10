@@ -186,11 +186,14 @@ public class AnswerPollRunner extends CommandRunner {
             var options = question.getOptions();
             var givenAnswer = request.getText();
 
-            if (IntStream.range(0, options.size()).noneMatch(index -> buttonFromOption(options.get(index), index).match(givenAnswer))) {
-                return request.replyBuilder().text("Недопустимый вариант ответа, повторите ещё раз").build();
+            try {
+                String indexPart = givenAnswer.startsWith("btn_") ? givenAnswer.substring("btn_".length()) : givenAnswer;
+                int index = Integer.parseInt(indexPart) - 1;
+                context.getAnswers().put(question.getId(), options.get(index));
+            } catch (Exception e) {
+                return request.replyBuilder().text("Недопустимый ответ, повторите ещё раз").build();
             }
 
-            context.getAnswers().put(question.getId(), request.getText());
             context.nextQuestion();
         }
 
@@ -218,17 +221,25 @@ public class AnswerPollRunner extends CommandRunner {
     }
 
     private TelegramDto.Response mapQuestionToReponse(Question question, TelegramDto.Request request) {
-        String text = question.getText();
+        StringBuilder text = new StringBuilder(question.getText() + "\n\n");
         var options = question.getOptions();
+
+        for (int i = 0; i < options.size(); i++) {
+            text.append(i + 1)
+                    .append(". ")
+                    .append(options.get(i))
+                    .append("\n");
+        }
+        text.append("\n").append("Выберите цифрой %d - %d".formatted(1, options.size()));
         var inlineButtons = IntStream.range(0, options.size()).mapToObj(
-                index -> buttonFromOption(options.get(index), index)
+                index -> new TelegramDto.Response.InlineButton(String.valueOf(index + 1), "btn_" + (index + 1))
         ).toList();
-        return request.replyBuilder().text(text).inlineButtons(inlineButtons).build();
+        return request.replyBuilder().text(text.toString()).inlineButtons(inlineButtons).build();
     }
 
-    private TelegramDto.Response.InlineButton buttonFromOption(String option, int index) {
-        return new TelegramDto.Response.InlineButton(option, "btn_option_" + index);
-    }
+//    private TelegramDto.Response.InlineButton buttonFromOption(String option, int index) {
+//        return new TelegramDto.Response.InlineButton(option, "btn_option_" + index);
+//    }
 
 
 
