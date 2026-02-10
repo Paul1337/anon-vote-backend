@@ -7,6 +7,8 @@ import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
@@ -31,21 +33,33 @@ public class AppTelegramBot extends TelegramLongPollingBot {
 
     private static final Logger logger = LoggerFactory.getLogger(AppTelegramBot.class);
 
+    private final TaskExecutor taskExecutor;
+
     public AppTelegramBot(@Value("${telegram.bot.username}") String botUsername,
                           @Value("${telegram.bot.token}") String botToken,
                           TelegramInteractionService interactionService,
                           TelegramResponseProvider telegramResponseProvider,
-                          BotCommandRegistry botCommandRegistry) {
+                          BotCommandRegistry botCommandRegistry,
+                          TaskExecutor taskExecutor) {
         super(botToken);
         this.botToken = botToken;
         this.botUsername = botUsername;
         this.interactionService = interactionService;
         this.telegramResponseProvider = telegramResponseProvider;
         this.botCommandRegistry = botCommandRegistry;
+        this.taskExecutor = taskExecutor;
     }
 
     @Override
     public void onUpdateReceived(Update update) {
+        taskExecutor.execute(() -> processUpdate(update));
+    }
+
+    private void processUpdate(Update update) {
+        String threadName = Thread.currentThread().getName();
+
+        logger.debug("Начало обработки update {} в потоке {}", update.getUpdateId(), threadName);
+
         TelegramDto.Request request = TelegramDto.Request.from(update);
         if (request == null) return;
 
