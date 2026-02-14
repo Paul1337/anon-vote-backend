@@ -14,6 +14,7 @@ import com.limspyne.anon_vote.poll.presenter.dto.GetPoll;
 import com.limspyne.anon_vote.users.application.services.UserService;
 import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
 import com.limspyne.anon_vote.users.instrastructure.security.AppUserDetails;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,24 +25,19 @@ import java.util.Set;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PollCreationService {
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private PollTagProviderService pollTagProviderService;
+    private final PollTagProviderService pollTagProviderService;
 
-    @Autowired
-    private PollRepository pollRepository;
+    private final PollRepository pollRepository;
 
-    @Autowired
-    private PollMapper pollMapper;
+    private final PollMapper pollMapper;
 
     @Transactional
     public GetPoll.Response createPoll(CreatePoll.Request dto, AppUserDetails appUserDetails) {

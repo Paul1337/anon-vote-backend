@@ -2,6 +2,7 @@ package com.limspyne.anon_vote.poll.infrastructure.mappers;
 
 import com.limspyne.anon_vote.poll.presenter.dto.GetCategory;
 import com.limspyne.anon_vote.poll.application.entities.PollCategory;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,9 +11,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class CategoryMapper {
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     public GetCategory.ResponseWithPathDto toDtoWithPath(PollCategory category, int pathDepth) {
         List<String> path = new ArrayList<>();

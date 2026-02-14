@@ -2,6 +2,7 @@ package com.limspyne.anon_vote.users.instrastructure.security;
 
 import com.limspyne.anon_vote.users.application.entities.User;
 import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,9 +12,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@RequiredArgsConstructor
 public class EmailCodeAuthenticationProvider implements AuthenticationProvider {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional

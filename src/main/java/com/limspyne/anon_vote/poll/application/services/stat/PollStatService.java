@@ -7,6 +7,7 @@ import com.limspyne.anon_vote.poll.infrastructure.dto.StatProjection;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollAnswerRecordRepository;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
 import com.limspyne.anon_vote.poll.presenter.dto.GetDailyStat;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,12 +21,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PollStatService {
-    @Autowired
-    private PollRepository pollRepository;
+    private final PollRepository pollRepository;
 
-    @Autowired
-    private PollAnswerRecordRepository answerRecordRepository;
+    private final PollAnswerRecordRepository answerRecordRepository;
 
     @Transactional(readOnly = true)
     public Map<UUID, Map<String, Long>> getBasicStat(UUID pollId) {

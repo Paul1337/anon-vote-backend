@@ -9,6 +9,7 @@ import com.limspyne.anon_vote.poll.presenter.dto.GetPoll;
 import com.limspyne.anon_vote.poll.presenter.dto.SearchPolls;
 import com.limspyne.anon_vote.shared.presenter.dto.PageResponseDto;
 import com.limspyne.anon_vote.users.instrastructure.security.AppUserDetails;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,15 +20,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PollQueryService {
-    @Autowired
-    private PollMapper pollMapper;
+    private final PollMapper pollMapper;
 
-    @Autowired
-    private PollRepository pollRepository;
-
-    @Autowired
-    private PollAnswerRecordRepository pollAnswerRecordRepository;
+    private final PollRepository pollRepository;
 
     public Poll getPollById(UUID pollId) {
         return pollRepository.findById(pollId).orElseThrow(() -> new PollNotFoundException(pollId));
@@ -59,7 +56,7 @@ public class PollQueryService {
         if (userDetails != null) {
             pollsDtos = pollMapper.toListOfResponsesForAuthenticatedUser(pollsPage.getContent(), userDetails);
         } else {
-            pollsDtos = pollsPage.stream().map(poll -> pollMapper.toResponseForAnonymousUser(poll)).toList();
+            pollsDtos = pollsPage.stream().map(pollMapper::toResponseForAnonymousUser).toList();
         }
         return new PageResponseDto<>(pollsDtos, pollsPage.hasNext());
     }

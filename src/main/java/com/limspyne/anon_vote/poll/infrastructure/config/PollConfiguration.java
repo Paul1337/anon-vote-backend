@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 @Configuration
 public class PollConfiguration {
-    @Autowired
     public void configureModelMapper(ModelMapper modelMapper) {
         modelMapper.typeMap(PollCategory.class, GetCategory.ResponseDto.class).addMappings(mapper -> {
             mapper.map(src -> new ArrayList<>(),

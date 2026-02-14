@@ -2,6 +2,7 @@ package com.limspyne.anon_vote.poll.application.services;
 
 import com.limspyne.anon_vote.poll.application.entities.PollTag;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollTagRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +12,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PollTagProviderService {
-    @Autowired
-    private PollTagRepository pollTagRepository;
+    private final PollTagRepository pollTagRepository;
 
     public Set<PollTag> provideTagsOfNames(Set<String> tagNames) {
         if (tagNames.isEmpty()) return new HashSet<>();

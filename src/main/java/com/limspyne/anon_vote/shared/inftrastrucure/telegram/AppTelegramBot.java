@@ -51,7 +51,8 @@ public class AppTelegramBot extends TelegramLongPollingBot {
                     8,
                     0L,
                     TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<>(1000)
+                    new LinkedBlockingQueue<>(1000),
+                    new ThreadPoolExecutor.CallerRunsPolicy()
             );
 
     private final ConcurrentHashMap<Long, UserQueue> userQueues = new ConcurrentHashMap<>();

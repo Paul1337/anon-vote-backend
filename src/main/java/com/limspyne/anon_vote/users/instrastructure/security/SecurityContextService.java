@@ -3,6 +3,7 @@ package com.limspyne.anon_vote.users.instrastructure.security;
 import com.limspyne.anon_vote.users.application.entities.User;
 import com.limspyne.anon_vote.users.application.exceptions.UserNotFoundException;
 import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -11,9 +12,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class SecurityContextService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

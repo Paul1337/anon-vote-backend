@@ -11,30 +11,26 @@ import com.limspyne.anon_vote.poll.infrastructure.repositories.QuestionRepositor
 import com.limspyne.anon_vote.users.application.entities.User;
 import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
 import com.limspyne.anon_vote.users.instrastructure.security.SecurityContextService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PollSubmitService {
-    @Autowired
-    private PollRepository pollRepository;
+    private final PollRepository pollRepository;
 
-    @Autowired
-    private PollAnswerRecordRepository pollAnswerRecordRepository;
+    private final PollAnswerRecordRepository pollAnswerRecordRepository;
 
-    @Autowired
-    private QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private SecurityContextService securityContextService;
+    private final SecurityContextService securityContextService;
 
     @Transactional
     public void submitPoll(User user, UUID pollId, Map<UUID, String> answersMap) {

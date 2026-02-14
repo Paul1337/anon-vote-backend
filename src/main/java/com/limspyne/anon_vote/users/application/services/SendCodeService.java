@@ -11,6 +11,7 @@ import com.limspyne.anon_vote.users.application.entities.User;
 import com.limspyne.anon_vote.users.application.entities.UserActiveCode;
 import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
 import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -23,12 +24,11 @@ import java.util.Comparator;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class SendCodeService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private HtmlMailSender mailService;
+    private final HtmlMailSender mailService;
 
     private static final String CONFIRM_EMAIL_TEMPLATE = "templates/emails/confirm-email.html";
 

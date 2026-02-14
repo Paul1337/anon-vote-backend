@@ -4,6 +4,7 @@ import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
 import com.limspyne.anon_vote.poll.presenter.dto.GetPoll;
 import com.limspyne.anon_vote.poll.application.entities.Poll;
 import com.limspyne.anon_vote.users.instrastructure.security.AppUserDetails;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,12 +12,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class PollMapper {
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private PollRepository pollRepository;
+    private final PollRepository pollRepository;
 
     public GetPoll.Response toResponseForAnonymousUser(Poll poll) {
         return toResponseWithUserSpecificData(poll, false);

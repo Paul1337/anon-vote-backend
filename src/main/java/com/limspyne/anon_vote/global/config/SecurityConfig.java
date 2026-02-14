@@ -2,6 +2,7 @@ package com.limspyne.anon_vote.global.config;
 
 import com.limspyne.anon_vote.users.instrastructure.security.EmailCodeAuthenticationProvider;
 import com.limspyne.anon_vote.users.instrastructure.security.JwtAuthFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,12 +21,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableMethodSecurity
 @EnableWebMvc
+@RequiredArgsConstructor
 public class SecurityConfig implements WebMvcConfigurer {
-    @Autowired
-    private JwtAuthFilter jwtAuthFilter;
+    private final JwtAuthFilter jwtAuthFilter;
 
-    @Autowired
-    private EmailCodeAuthenticationProvider emailCodeAuthenticationProvider;
+    private final EmailCodeAuthenticationProvider emailCodeAuthenticationProvider;
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
