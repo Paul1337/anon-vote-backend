@@ -4,6 +4,7 @@ import com.limspyne.anon_vote.shared.application.telegram.services.BotCommandReg
 import com.limspyne.anon_vote.shared.application.telegram.services.TelegramInteractionService;
 import com.limspyne.anon_vote.shared.application.telegram.dto.TelegramDto;
 import jakarta.annotation.PostConstruct;
+import org.glassfish.jersey.innate.virtual.ThreadFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,17 @@ import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScope
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component
 public class AppTelegramBot extends TelegramLongPollingBot {
@@ -33,35 +45,74 @@ public class AppTelegramBot extends TelegramLongPollingBot {
 
     private static final Logger logger = LoggerFactory.getLogger(AppTelegramBot.class);
 
-    private final TaskExecutor taskExecutor;
+    private final ExecutorService executor =
+            new ThreadPoolExecutor(
+                    8,
+                    8,
+                    0L,
+                    TimeUnit.MILLISECONDS,
+                    new LinkedBlockingQueue<>(1000)
+            );
+
+    private final ConcurrentHashMap<Long, UserQueue> userQueues = new ConcurrentHashMap<>();
+
+    private static class UserQueue {
+        final Queue<Runnable> tasks = new ConcurrentLinkedQueue<>();
+        final AtomicBoolean processing = new AtomicBoolean(false);
+    }
 
     public AppTelegramBot(@Value("${telegram.bot.username}") String botUsername,
                           @Value("${telegram.bot.token}") String botToken,
                           TelegramInteractionService interactionService,
                           TelegramResponseProvider telegramResponseProvider,
-                          BotCommandRegistry botCommandRegistry,
-                          TaskExecutor taskExecutor) {
+                          BotCommandRegistry botCommandRegistry) {
         super(botToken);
         this.botToken = botToken;
         this.botUsername = botUsername;
         this.interactionService = interactionService;
         this.telegramResponseProvider = telegramResponseProvider;
         this.botCommandRegistry = botCommandRegistry;
-        this.taskExecutor = taskExecutor;
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        taskExecutor.execute(() -> processUpdate(update));
-    }
-
-    private void processUpdate(Update update) {
-        String threadName = Thread.currentThread().getName();
-
-        logger.debug("Начало обработки update {} в потоке {}", update.getUpdateId(), threadName);
-
         TelegramDto.Request request = TelegramDto.Request.from(update);
         if (request == null) return;
+
+        // User-bound threads для избежания race-condition при взаимодействии с телеграм сессией пользователя
+
+        UserQueue userQueue = userQueues.computeIfAbsent(request.getTelegramId(), id -> new UserQueue());
+        userQueue.tasks.add(() -> processRequest(request));
+
+        tryStartProcessing(request.getTelegramId(), userQueue);
+    }
+
+    private void tryStartProcessing(long userId, UserQueue userQueue) {
+        if (userQueue.processing.compareAndSet(false, true)) {
+            executor.submit(() -> {
+                try {
+                    Runnable task;
+                    while ((task = userQueue.tasks.poll()) != null) {
+                        task.run();
+                    }
+                } finally {
+                    userQueue.processing.set(false);
+
+                    // если пока обрабатывали — прилетели новые задачи
+                    if (!userQueue.tasks.isEmpty()) {
+                        tryStartProcessing(userId, userQueue);
+                    } else {
+                        userQueues.remove(userId, userQueue);
+                    }
+                }
+            });
+        }
+    }
+
+    private void processRequest(TelegramDto.Request request) {
+        String threadName = Thread.currentThread().getName();
+
+        logger.info("Поток {}: начало обработки telegram request", threadName);
 
         TelegramDto.Response response = interactionService.handle(request);
         if (response == null) return;
@@ -76,6 +127,8 @@ public class AppTelegramBot extends TelegramLongPollingBot {
                 executeMessage(telegramResponseProvider.getResponseMessage(nextCommandResponse));
             }
         }
+
+        logger.info("Поток {}: конец обработки telegram request", threadName);
     }
 
     private void executeMessage(SendMessage message) {

@@ -3,7 +3,9 @@ package com.limspyne.anon_vote.shared.application.telegram.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.limspyne.anon_vote.poll.application.services.botcommands.answerpoll.AnswerPollContext;
 import com.limspyne.anon_vote.users.application.services.botcommands.auth.AuthCommandContext;
+import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
