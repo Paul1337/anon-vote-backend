@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,7 @@ public class PollStatService {
         var poll = pollRepository.findById(pollId).orElseThrow(() -> new PollNotFoundException(pollId));
 
         for (var question: poll.getQuestions()) {
-            var defaultStat = new HashMap<String, Long>();
+            var defaultStat = new TreeMap<String, Long>();
             question.getOptions().forEach(option -> {
                 defaultStat.put(option, 0L);
             });
@@ -78,13 +79,13 @@ public class PollStatService {
 
         for (var statItem: statsUpToStartDay) {
             if (!answers.containsKey(statItem.getQuestionId())) {
-                answers.put(statItem.getQuestionId(), new HashMap<>());
+                answers.put(statItem.getQuestionId(), new TreeMap<>());
             }
             answers.get(statItem.getQuestionId()).put(statItem.getAnswerText(), statItem.getAnswerCount());
         }
 
         poll.getQuestions().forEach(question -> {
-            var answersForQuestion = answers.getOrDefault(question.getId(), new HashMap<>());
+            var answersForQuestion = answers.getOrDefault(question.getId(), new TreeMap<>());
             question.getOptions().forEach(option -> {
                 if (!answersForQuestion.containsKey(option)) {
                     answersForQuestion.put(option, 0L);
@@ -110,7 +111,7 @@ public class PollStatService {
             Map<UUID, Map<String, Long>> currentAnswersCopy = answers.entrySet().stream()
                     .collect(Collectors.toMap(
                             Map.Entry::getKey,
-                            entry -> new HashMap<>(entry.getValue())
+                            entry -> new TreeMap<>(entry.getValue())
                     ));
 
             result.add(new GetDailyStat.StatItem(currentDate, currentAnswersCopy));
