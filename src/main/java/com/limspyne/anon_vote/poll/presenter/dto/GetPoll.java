@@ -27,5 +27,6 @@ public class GetPoll {
         private String categoryId;
         private Set<String> tags;
         private boolean isAnswered;
+        private long votes;
     }
 }
