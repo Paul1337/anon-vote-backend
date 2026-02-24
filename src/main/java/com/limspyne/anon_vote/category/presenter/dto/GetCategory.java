@@ -1,4 +1,4 @@
-package com.limspyne.anon_vote.poll.presenter.dto;
+package com.limspyne.anon_vote.category.presenter.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

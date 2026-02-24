@@ -1,10 +1,10 @@
-package com.limspyne.anon_vote.poll.application.services.query;
+package com.limspyne.anon_vote.category.application.services;
 
-import com.limspyne.anon_vote.poll.application.entities.PollCategory;
-import com.limspyne.anon_vote.poll.application.exceptions.CategoryNotFoundException;
-import com.limspyne.anon_vote.poll.infrastructure.mappers.CategoryMapper;
-import com.limspyne.anon_vote.poll.infrastructure.repositories.CategoryRepository;
-import com.limspyne.anon_vote.poll.presenter.dto.GetCategory;
+import com.limspyne.anon_vote.category.application.entities.PollCategory;
+import com.limspyne.anon_vote.category.application.exceptions.CategoryNotFoundException;
+import com.limspyne.anon_vote.category.infrastructure.mappers.CategoryMapper;
+import com.limspyne.anon_vote.category.infrastructure.repositories.CategoryRepository;
+import com.limspyne.anon_vote.category.presenter.dto.GetCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

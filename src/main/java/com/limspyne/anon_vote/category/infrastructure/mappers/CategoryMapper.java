@@ -1,10 +1,9 @@
-package com.limspyne.anon_vote.poll.infrastructure.mappers;
+package com.limspyne.anon_vote.category.infrastructure.mappers;
 
-import com.limspyne.anon_vote.poll.presenter.dto.GetCategory;
-import com.limspyne.anon_vote.poll.application.entities.PollCategory;
+import com.limspyne.anon_vote.category.presenter.dto.GetCategory;
+import com.limspyne.anon_vote.category.application.entities.PollCategory;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;

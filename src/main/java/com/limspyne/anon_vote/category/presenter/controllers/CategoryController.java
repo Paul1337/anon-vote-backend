@@ -1,7 +1,7 @@
-package com.limspyne.anon_vote.poll.presenter.controllers;
+package com.limspyne.anon_vote.category.presenter.controllers;
 
-import com.limspyne.anon_vote.poll.application.services.query.CategoryQueryService;
-import com.limspyne.anon_vote.poll.presenter.dto.GetCategory;
+import com.limspyne.anon_vote.category.application.services.CategoryQueryService;
+import com.limspyne.anon_vote.category.presenter.dto.GetCategory;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

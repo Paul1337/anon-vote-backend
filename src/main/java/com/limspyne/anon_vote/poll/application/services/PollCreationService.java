@@ -1,13 +1,13 @@
 package com.limspyne.anon_vote.poll.application.services;
 
 import com.limspyne.anon_vote.poll.application.entities.Poll;
-import com.limspyne.anon_vote.poll.application.entities.PollCategory;
+import com.limspyne.anon_vote.category.application.entities.PollCategory;
 import com.limspyne.anon_vote.poll.application.entities.PollTag;
 import com.limspyne.anon_vote.poll.application.entities.Question;
-import com.limspyne.anon_vote.poll.application.exceptions.CategoryNotFoundException;
+import com.limspyne.anon_vote.category.application.exceptions.CategoryNotFoundException;
 import com.limspyne.anon_vote.poll.application.exceptions.DuplicateAnswerInPollException;
 import com.limspyne.anon_vote.poll.infrastructure.mappers.PollMapper;
-import com.limspyne.anon_vote.poll.infrastructure.repositories.CategoryRepository;
+import com.limspyne.anon_vote.category.infrastructure.repositories.CategoryRepository;
 import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
 import com.limspyne.anon_vote.poll.presenter.dto.CreatePoll;
 import com.limspyne.anon_vote.poll.presenter.dto.GetPoll;
@@ -15,7 +15,6 @@ import com.limspyne.anon_vote.users.application.services.UserService;
 import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
 import com.limspyne.anon_vote.users.instrastructure.security.AppUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

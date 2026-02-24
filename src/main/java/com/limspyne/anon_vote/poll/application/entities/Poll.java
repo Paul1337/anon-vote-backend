@@ -1,5 +1,6 @@
 package com.limspyne.anon_vote.poll.application.entities;
 
+import com.limspyne.anon_vote.category.application.entities.PollCategory;
 import com.limspyne.anon_vote.users.application.entities.User;
 import com.limspyne.anon_vote.voting.entities.PollVote;
 import jakarta.persistence.*;
