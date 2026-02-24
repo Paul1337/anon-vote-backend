@@ -12,7 +12,6 @@ import com.limspyne.anon_vote.users.application.entities.User;
 import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
 import com.limspyne.anon_vote.users.instrastructure.security.SecurityContextService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;

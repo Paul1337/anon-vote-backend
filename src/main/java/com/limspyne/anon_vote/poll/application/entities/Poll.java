@@ -1,6 +1,7 @@
 package com.limspyne.anon_vote.poll.application.entities;
 
 import com.limspyne.anon_vote.users.application.entities.User;
+import com.limspyne.anon_vote.voting.entities.PollVote;
 import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.OrderBy;
@@ -71,6 +72,14 @@ public class Poll {
     @Setter
     private Set<User> attemptedUsers = new HashSet<>();
 
+    @Column(name = "votes")
+    @Getter
+    private long votes;
+
+    @Version
+    @Column(name = "version")
+    private long version;
+
     public Poll(String title, PollCategory category, User author) {
         this.title = title;
         questions = new ArrayList<>();
@@ -99,5 +108,27 @@ public class Poll {
         updatedAt = LocalDateTime.now();
     }
 
+    public void cancelVote(PollVote vote) {
+        if (vote.getVoteType() == PollVote.VoteType.Up) {
+            downVote();
+        } else if (vote.getVoteType() == PollVote.VoteType.Down) {
+            upVote();
+        }
+    }
 
+    public void applyVote(PollVote vote) {
+        if (vote.getVoteType() == PollVote.VoteType.Up) {
+            upVote();
+        } else if (vote.getVoteType() == PollVote.VoteType.Down) {
+            downVote();
+        }
+    }
+
+    private void upVote() {
+        votes++;
+    }
+
+    private void downVote() {
+        votes--;
+    }
 }

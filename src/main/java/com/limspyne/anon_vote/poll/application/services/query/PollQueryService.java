@@ -30,6 +30,10 @@ public class PollQueryService {
         return pollRepository.findById(pollId).orElseThrow(() -> new PollNotFoundException(pollId));
     }
 
+    public Poll getPollByIdWithoutRelations(UUID pollId) {
+        return pollRepository.findByIdWithoutRelations(pollId).orElseThrow(() -> new PollNotFoundException(pollId));
+    }
+
     @Transactional(readOnly = true)
     public GetPoll.Response getPollByIdForAnonymousUser(UUID pollId) {
         var poll = getPollById(pollId);

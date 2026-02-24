@@ -1,5 +1,6 @@
 package com.limspyne.anon_vote.users.instrastructure.security;
 
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,15 +10,12 @@ import java.util.UUID;
 
 public class AppUserDetails implements UserDetails {
     private String username;
+    @Getter
     private UUID id;
 
     public AppUserDetails(String username, UUID id) {
         this.username = username;
         this.id = id;
-    }
-
-    public UUID getId() {
-        return id;
     }
 
     @Override

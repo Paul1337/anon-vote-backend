@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.boot.test.context.SpringBootTest;
 
 //@SpringBootTest
-class AnonVoteApplicationTests {
+class AnonPollVoteApplicationTests {
 
 	@Test
 	void contextLoads() {

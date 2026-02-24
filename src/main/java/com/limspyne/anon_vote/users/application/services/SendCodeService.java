@@ -12,6 +12,7 @@ import com.limspyne.anon_vote.users.application.entities.UserActiveCode;
 import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,6 +26,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SendCodeService {
     private final UserRepository userRepository;
 
@@ -49,6 +51,8 @@ public class SendCodeService {
             throw new CodeSendLimitException(request.getEmail());
         }
 
+        log.info("Sent verification code {}", code.getValue());
+
         user.addActiveCode(code);
         userRepository.save(user);
 
@@ -61,6 +65,8 @@ public class SendCodeService {
                     description,
                     code.getValue()
             );
+
+
             mailService.sendHtmlMail(new HtmlMail(request.getEmail(), "Подтверждение почты на AnonVote", textContent, htmlContent));
         } catch (MessagingException exp) {
             throw new CouldNotSendCodeException(request.getEmail());
