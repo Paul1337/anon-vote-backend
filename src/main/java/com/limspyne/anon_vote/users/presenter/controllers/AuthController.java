@@ -49,7 +49,7 @@ public class AuthController {
 
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getMe() {
+    public ResponseEntity<?> checkAuth() {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

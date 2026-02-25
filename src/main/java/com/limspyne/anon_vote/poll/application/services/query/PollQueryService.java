@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,6 +66,7 @@ public class PollQueryService {
         return new PageResponseDto<>(pollsDtos, pollsPage.hasNext());
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public PageResponseDto<GetPoll.Response> findUsersPolls(int page, int size, AppUserDetails userDetails) {
         PageRequest pageRequest = PageRequest.of(page, size);

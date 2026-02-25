@@ -34,11 +34,10 @@ public class PollController {
     private final SecurityContextService securityContextService;
 
     @PostMapping({""})
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<GetPoll.Response> createPoll(@RequestBody @Valid CreatePoll.Request dto, @AuthenticationPrincipal AppUserDetails userDetails) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(pollCreationService.createPoll(dto,userDetails));
+                .body(pollCreationService.createPoll(dto, userDetails));
     }
 
     @GetMapping("/search")
@@ -47,7 +46,6 @@ public class PollController {
     }
 
     @GetMapping("/my")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PageResponseDto<GetPoll.Response>> findMyPolls(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @AuthenticationPrincipal AppUserDetails userDetails) {
         return ResponseEntity.ok().body(pollQueryService.findUsersPolls(page, size, userDetails));
     }
@@ -57,7 +55,6 @@ public class PollController {
             summary = "Submit poll answers",
             description = "Creates a new poll answer record with the provided answers"
     )
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> submitPoll(@RequestBody SubmitPoll.Request request, @PathVariable(name = "id") UUID pollId) {
         User user = securityContextService.getCurrentUser();
         pollSubmitService.submitPoll(user, pollId, request.getAnswers());

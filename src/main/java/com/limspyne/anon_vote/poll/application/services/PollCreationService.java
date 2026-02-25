@@ -15,6 +15,7 @@ import com.limspyne.anon_vote.users.application.services.UserService;
 import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
 import com.limspyne.anon_vote.users.instrastructure.security.AppUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +39,7 @@ public class PollCreationService {
 
     private final PollMapper pollMapper;
 
+    @PreAuthorize("isAuthenticated()")
     @Transactional
     public GetPoll.Response createPoll(CreatePoll.Request dto, AppUserDetails appUserDetails) {
         UUID categoryId = UUID.fromString(dto.categoryId());

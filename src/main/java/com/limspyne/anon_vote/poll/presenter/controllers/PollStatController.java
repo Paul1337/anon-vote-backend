@@ -26,36 +26,18 @@ public class PollStatController {
     private final PollStatExportService exportService;
 
     @GetMapping("/{pollId}/basicStat")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<GetBasicStat.Response> getPollStat(@PathVariable("pollId") UUID pollId) {
         var statResponse = pollStatService.getBasicStat(pollId);
         return ResponseEntity.ok().body(new GetBasicStat.Response(statResponse));
     }
 
     @GetMapping("/{pollId}/dailyStat")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<GetDailyStat.Response> getTimeStat(@PathVariable("pollId") UUID pollId, @RequestParam(defaultValue = "7") int daysBefore) {
         var statResult = pollStatService.getAnswerStatsByDay(pollId, LocalDate.now().minusDays(daysBefore - 1), LocalDate.now());
         return ResponseEntity.ok().body(statResult);
     }
-//
-//    @GetMapping("/{pollId}/dailyStat/export/pdf")
-//    public ResponseEntity<byte[]> exportToPdf(
-//            @PathVariable UUID pollId,
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-//
-//        byte[] pdfContent = exportService.exportToPdf(pollId, startDate, endDate);
-//
-//        return ResponseEntity.ok()
-//                .header(HttpHeaders.CONTENT_DISPOSITION,
-//                        "attachment; filename=\"poll_stats_" + LocalDate.now() + ".pdf\"")
-//                .contentType(MediaType.APPLICATION_PDF)
-//                .body(pdfContent);
-//    }
 
     @GetMapping("/{pollId}/dailyStat/export/csv")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<byte[]> exportToCsv(
             @PathVariable UUID pollId,
             @RequestParam(defaultValue = "7") int daysBefore) {

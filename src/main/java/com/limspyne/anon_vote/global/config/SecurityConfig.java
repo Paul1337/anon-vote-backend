@@ -1,9 +1,8 @@
 package com.limspyne.anon_vote.global.config;
 
 import com.limspyne.anon_vote.users.instrastructure.security.EmailCodeAuthenticationProvider;
-import com.limspyne.anon_vote.users.instrastructure.security.JwtAuthFilter;
+import com.limspyne.anon_vote.users.instrastructure.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,7 +22,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebMvc
 @RequiredArgsConstructor
 public class SecurityConfig implements WebMvcConfigurer {
-    private final JwtAuthFilter jwtAuthFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private final EmailCodeAuthenticationProvider emailCodeAuthenticationProvider;
 
@@ -49,10 +48,10 @@ public class SecurityConfig implements WebMvcConfigurer {
         http
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        .anyRequest().permitAll() // здесь разрешаем всё, так как настраиваем правила доступа точечно по method-security
                 )
                 .csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

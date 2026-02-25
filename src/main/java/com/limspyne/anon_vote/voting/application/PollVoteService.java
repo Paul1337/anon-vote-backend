@@ -11,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
@@ -32,6 +33,7 @@ public class PollVoteService {
             backoff = @Backoff(delay = 50)
     )
     @Transactional
+    @PreAuthorize("isAuthenticated()")
     public void updateVoteType(UUID pollId, AppUserDetails userDetails, PollVote.VoteType voteType) {
         makeVote(userDetails.getId(), pollId, voteType);
     }

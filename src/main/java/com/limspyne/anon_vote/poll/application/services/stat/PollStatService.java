@@ -9,6 +9,7 @@ import com.limspyne.anon_vote.poll.infrastructure.repositories.PollRepository;
 import com.limspyne.anon_vote.poll.presenter.dto.GetDailyStat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,7 @@ public class PollStatService {
 
     private final PollAnswerRecordRepository answerRecordRepository;
 
+    @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public Map<UUID, Map<String, Long>> getBasicStat(UUID pollId) {
         var pollAnswerRecords = answerRecordRepository.findAllByPollId(pollId);
@@ -56,6 +58,7 @@ public class PollStatService {
         return response;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public GetDailyStat.Response getAnswerStatsByDay(UUID pollId, LocalDate startDate, LocalDate endDate) {
         // Бизнес-метод: получение кумулятивной статистики по дням

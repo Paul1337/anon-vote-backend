@@ -12,6 +12,7 @@ import com.limspyne.anon_vote.users.application.entities.User;
 import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
 import com.limspyne.anon_vote.users.instrastructure.security.SecurityContextService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -31,6 +32,7 @@ public class PollSubmitService {
 
     private final SecurityContextService securityContextService;
 
+    @PreAuthorize("isAuthenticated()")
     @Transactional
     public void submitPoll(User user, UUID pollId, Map<UUID, String> answersMap) {
         Poll poll = pollRepository.findById(pollId).orElseThrow(() -> new PollNotFoundException(pollId));

@@ -3,6 +3,7 @@ package com.limspyne.anon_vote.poll.application.services.stat.export;
 import com.limspyne.anon_vote.poll.application.services.stat.PollStatService;
 import com.limspyne.anon_vote.poll.presenter.dto.GetDailyStat;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
