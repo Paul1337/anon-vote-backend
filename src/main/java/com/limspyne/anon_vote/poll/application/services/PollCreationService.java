@@ -29,8 +29,6 @@ import java.util.UUID;
 public class PollCreationService {
     private final CategoryRepository categoryRepository;
 
-    private final UserRepository userRepository;
-
     private final UserService userService;
 
     private final PollTagProviderService pollTagProviderService;

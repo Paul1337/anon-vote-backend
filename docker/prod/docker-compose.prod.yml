@@ -81,7 +81,6 @@ services:
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
     ports:
       - "${APP_PORT}:${APP_PORT}"
-      - "5005:5005"
     networks:
       - server-net
 
