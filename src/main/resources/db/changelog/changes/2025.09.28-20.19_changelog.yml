@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-poll-tag-many-to-many-relation
+      author: paul
+      changes:
+        - sql:
+            sql: |
+              CREATE TABLE poll_tag_relation (
+                  poll_id UUID NOT NULL REFERENCES poll(id) ON DELETE CASCADE,
+                  tag_id UUID NOT NULL REFERENCES poll_tag(id) ON DELETE CASCADE,
+                  PRIMARY KEY (poll_id, tag_id)
+              );

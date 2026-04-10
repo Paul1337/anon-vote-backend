@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: poll-question-answer-question-on-delete-cascade
+      author: paul
+      changes:
+        - sql: |
+            ALTER TABLE poll_question_answer
+            DROP CONSTRAINT IF EXISTS poll_question_answer_question_fk;
+                
+            ALTER TABLE poll_question_answer
+            ADD CONSTRAINT poll_question_answer_question_fk
+            FOREIGN KEY (question_id) REFERENCES question(id)
+            ON DELETE CASCADE;

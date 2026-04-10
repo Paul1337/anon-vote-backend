@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: user-add-telegram-id-unique-constraint
+      author: paul
+      changes:
+        - sql: |
+            ALTER TABLE users
+            ADD CONSTRAINT un_users_telegram_id UNIQUE (telegram_id);
+

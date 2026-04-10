@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: poll-author_id-nullable
+      author: paul
+      changes:
+        - sql: |
+            ALTER TABLE poll
+            ALTER COLUMN author_id DROP NOT NULL;
+      
+

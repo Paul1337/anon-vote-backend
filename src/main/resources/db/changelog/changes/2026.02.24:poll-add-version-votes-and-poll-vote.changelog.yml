@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026.02.24:poll-add-version-votes-and-poll-vote.changelog
+      author: paul
+      changes:
+          - sql: |
+                ALTER TABLE poll
+                ADD COLUMN version BIGINT DEFAULT 0 NOT NULL;
+
+          - sql: |
+                ALTER TABLE poll
+                ADD COLUMN votes BIGINT DEFAULT 0 NOT NULL;
+
+          - sql: |
+                CREATE TABLE poll_vote (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    author_id UUID NOT NULL,
+                    poll_id UUID NOT NULL,
+                    vote_type VARCHAR(10) DEFAULT 'None' NOT NULL,
+                    CONSTRAINT uq_poll_vote_author_poll UNIQUE(author_id, poll_id),
+                    CONSTRAINT fk_poll_vote_author FOREIGN KEY(author_id) REFERENCES users(id) ON DELETE CASCADE,
+                    CONSTRAINT fk_poll_vote_poll FOREIGN KEY(poll_id) REFERENCES poll(id) ON DELETE CASCADE,
+                    CONSTRAINT chk_poll_vote_type CHECK (vote_type IN ('Up', 'Down', 'None'))
+                );

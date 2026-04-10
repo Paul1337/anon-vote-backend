@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: question-add-position
+      author: paul
+      changes:
+        - sql: |
+            ALTER TABLE question ADD COLUMN position INT NOT NULL DEFAULT 0;

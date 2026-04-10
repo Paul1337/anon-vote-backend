@@ -1,0 +1,24 @@
+package com.limspyne.anon_vote.users.instrastructure.security;
+
+import com.limspyne.anon_vote.users.application.exceptions.UserNotFoundException;
+import com.limspyne.anon_vote.users.instrastructure.repositories.UserRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class AppUserDetailsService implements UserDetailsService {
+    private final UserRepository userRepository;
+
+    @Override
+    @Transactional
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        var user = userRepository.findByEmail(username).orElseThrow(UserNotFoundException::new);
+        return new AppUserDetails(user.getEmail(), user.getId());
+    }
+}

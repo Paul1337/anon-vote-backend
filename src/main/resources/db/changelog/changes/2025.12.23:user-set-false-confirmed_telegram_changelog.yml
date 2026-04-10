@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: user-set-false-confirmed_telegram
+      author: paul
+      changes:
+        - sql: |
+            UPDATE users
+            SET confirmed_telegram = FALSE
+            WHERE confirmed_telegram IS NULL;
+

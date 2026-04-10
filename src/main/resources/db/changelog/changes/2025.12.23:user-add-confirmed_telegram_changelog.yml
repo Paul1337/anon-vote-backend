@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: user-add-confirmed_telegram
+      author: paul
+      changes:
+        - sql: |
+            ALTER TABLE users ADD COLUMN confirmed_telegram BOOLEAN;

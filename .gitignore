@@ -32,6 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
-.env
+docker/dev/.env
 secret.yaml
 secret.yml
+
+.env
+

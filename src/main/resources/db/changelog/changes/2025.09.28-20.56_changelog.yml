@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: poll_tag-name-add-unique-constraint
+      author: paul
+      changes:
+        - sql:
+            sql: ALTER TABLE poll_tag ADD UNIQUE (name);

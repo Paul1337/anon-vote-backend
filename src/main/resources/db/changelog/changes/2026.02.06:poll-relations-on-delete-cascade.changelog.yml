@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: poll-relations-on-delete-cascade
+      author: paul
+      changes:
+        - sql: |
+            ALTER TABLE question
+            DROP CONSTRAINT IF EXISTS fks9uu0i9ipek2tnqty4ohdek27;
+            
+            ALTER TABLE question
+            ADD CONSTRAINT fks9uu0i9ipek2tnqty4ohdek27
+            FOREIGN KEY (poll_id) REFERENCES poll(id)
+            ON DELETE CASCADE;
+        - sql: |
+            ALTER TABLE poll_answer_record
+            DROP CONSTRAINT IF EXISTS fk_poll_answer_record_poll;
+            
+            ALTER TABLE poll_answer_record
+            ADD CONSTRAINT fk_poll_answer_record_poll
+            FOREIGN KEY (poll_id) REFERENCES poll(id)
+            ON DELETE CASCADE;
+        - sql: |
+            ALTER TABLE poll_question_answer
+            DROP CONSTRAINT IF EXISTS poll_question_answer_record_fk;
+                
+            ALTER TABLE poll_question_answer
+            ADD CONSTRAINT poll_question_answer_record_fk
+            FOREIGN KEY (poll_answer_record_id) REFERENCES poll_answer_record(id)
+            ON DELETE CASCADE;
+        - sql: |
+            ALTER TABLE question_options
+            DROP CONSTRAINT IF EXISTS fkjk4v42xhyfv4ca1yyhorsg5tv;
+            
+            ALTER TABLE question_options
+            ADD CONSTRAINT fk_question_options_question
+            FOREIGN KEY (question_id) REFERENCES question(id)
+            ON DELETE CASCADE;
